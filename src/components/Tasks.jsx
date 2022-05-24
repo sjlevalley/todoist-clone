@@ -1,9 +1,13 @@
 import React from "react";
 import Checkbox from "./Checkbox";
 import { useTasks } from "../hooks";
+import db from "../firebase";
 
 function Tasks() {
-  const { tasks } = useTasks(1);
+  const { tasks } = useTasks("2");
+  // const tasks = [];
+
+  console.log(tasks);
 
   const projectName = "";
 
