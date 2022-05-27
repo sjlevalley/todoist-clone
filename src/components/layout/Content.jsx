@@ -1,14 +1,14 @@
-import React from "react";
-import Sidebar from "./Sidebar";
-import Tasks from "../Tasks";
+import React from 'react'
+import Sidebar from './Sidebar'
+import Tasks from '../Tasks'
 
-function Content() {
+function Content () {
   return (
     <section>
       <Sidebar />
       <Tasks />
     </section>
-  );
+  )
 }
 
-export default Content;
+export default Content
