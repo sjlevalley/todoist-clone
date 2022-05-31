@@ -35,32 +35,24 @@ export const useTasks = selectedProject => {
         q = query(tasksRef, where('date', '==', ''))
       }
 
-      // let querySnapshot = await getDocs(q);
       let querySnapshot = await getDocs(q)
+      let newTasks = []
       querySnapshot.forEach(item => {
-        const unsubscribe = onSnapshot(doc(db, 'tasks', item.id), doc => {
-          console.log('Current data: ', doc.data())
+        const unsub = onSnapshot(doc(db, 'tasks', item.id), doc => {
+          const newTask = {
+            id: doc.id,
+            ...doc.data()
+          }
+          newTasks.push(newTask)
+          if (selectedProject === 'NEXT_7') {
+            newTasks.filter(task => moment(task.date, 'DD-MM-YYYY').diff(moment(), 'days') <= 7 && task.archived !== true)
+          } else {
+            newTasks.filter((task) => task.archived !== true)
+          }
+          setTasks(() => newTasks)
+          setArchivedTasks(newTasks.filter((task) => task.archived !== false))
         })
       })
-      // querySnapshot.forEach((doc) => {
-      //     console.log("Current data: ", doc.data());
-      // });
-      // unsubscribe()
-      // unsubscribe.onSnapshot(snapshot => {
-      //     const newTasks = snapshot.docs.map(task => ({
-      //         id: task.id,
-      //         ...task.data()
-      //     }))
-      //     setTasks(
-      //         selectedProject === 'NEXT_7'
-      //             ? newTasks.filter(task => moment(task.date, 'DD-MM-YYYY').diff(moment(), 'days') <= 7 &&
-      //                 task.archived !== true
-      //             )
-      //             : newTasks.filter((task) => task.archived !== true)
-      //     )
-      //     setArchivedTasks(newTasks.filter((task) => task.archived !== false))
-      // })
-      // return unsubscribe
       return null
     }
     testFunction()
