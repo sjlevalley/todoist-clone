@@ -1,14 +1,19 @@
-import React from 'react'
-import Content from './components/layout/Content'
-import Header from './components/layout/Header'
+import React from "react";
+import Content from "./components/layout/Content";
+import Header from "./components/layout/Header";
+import { ProjectsProvider, SelectedProjectProvider } from "./context";
 
-function App () {
+function App() {
   return (
-    <div className='App'>
-      <Header />
-      <Content />
-    </div>
-  )
+    <SelectedProjectProvider>
+      <ProjectsProvider>
+        <div className="App">
+          <Header />
+          <Content />
+        </div>
+      </ProjectsProvider>
+    </SelectedProjectProvider>
+  );
 }
 
-export default App
+export default App;
