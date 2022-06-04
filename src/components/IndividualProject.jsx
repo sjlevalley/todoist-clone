@@ -10,11 +10,16 @@ function IndividualProject({ project }) {
   const { setSelectedProject } = useSelectedProjectValue();
 
   const deleteProject = async (docId) => {
-    console.log(docId);
-    await deleteDoc(doc(db, "projects", docId));
-
-    setProjects([...projects]);
-    setSelectedProject("INBOX");
+    try {
+      await deleteDoc(doc(db, "projects", docId));
+      const updatedProjects = projects.filter(
+        (project) => project.docId !== docId
+      );
+      setProjects([...updatedProjects]);
+      setSelectedProject("INBOX");
+    } catch (error) {
+      console.error(error);
+    }
 
     // firebase
     //   .firestore()
