@@ -17,8 +17,8 @@ export const useTasks = selectedProject => {
   const [archivedTasks, setArchivedTasks] = useState([])
 
   useEffect(() => {
-    const testFunction = async () => {
-      // // Get tasks where userId is equal to 123abc
+    const tasksFunction = async () => {
+      // Get tasks where userId is equal to 123abc
       let tasksRef = collection(db, 'tasks')
       let q = query(tasksRef, where('userId', '==', '123abc'))
 
@@ -55,17 +55,43 @@ export const useTasks = selectedProject => {
       })
       return null
     }
-    testFunction()
+    tasksFunction()
   }, [selectedProject])
 
   return { tasks, archivedTasks }
-  // The lines below should return all the current and archived tasks for the selected project with an Id of 1
-  // const selectedProject = 1
-  // const {tasks, archivedTasks} = useTasks(selectedProject)
 }
 
 export const useProjects = () => {
   const [projects, setProjects] = useState([])
+
+  useEffect(() => {
+    const projectsFunction = async () => {
+      // Get projects where userId is equal to '123abc'
+      let projectsRef = collection(db, 'projects')
+      let q = query(projectsRef, where('userId', '==', '123abc'))
+
+      let querySnapshot = await getDocs(q)
+      let allProjects = []
+      querySnapshot.forEach(item => {
+        const unsub = onSnapshot(doc(db, 'projects', item.id), project => {
+          const projectObj = {
+            docId: project.id,
+            ...project.data()
+          }
+          allProjects.push(projectObj)
+
+          if (JSON.stringify(allProjects) !== JSON.stringify(projects)) {
+            setProjects(() => allProjects)
+          }
+
+        })
+      })
+      return null
+    }
+    projectsFunction()
+  }, [projects])
+
+  return { projects, setProjects }
 
   // useEffect(() => {
   //     db
@@ -85,5 +111,5 @@ export const useProjects = () => {
   //         })
   // }, [projects])
 
-  return { projects, setProjects }
+  // return { projects, setProjects }
 }
