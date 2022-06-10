@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+// TODO: Fix css for Projects that is commented out
+import React, { useState, useId } from "react";
 import PropTypes from "prop-types";
 import { useSelectedProjectValue, useProjectsValues } from "../context";
 import IndividualProject from "./IndividualProject";
 
 export const Projects = ({ activeValue = null }) => {
+  const id = useId();
   const [active, setActive] = useState(activeValue);
   const { setSelectedProject } = useSelectedProjectValue();
   const { projects } = useProjectsValues();
-
-  console.log(projects);
 
   return (
     projects &&
     projects.map((project) => (
       <li
-        key={project.projectId}
+        key={id}
         data-testid="project-action-parent"
         data-doc-id={project.docId}
         className={
