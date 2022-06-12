@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import { useProjectsValues, useSelectedProjectValue } from "../context";
+import { useProjectsValue, useSelectedProjectValue } from "../context";
 import db from "../firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 
 function IndividualProject({ project }) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const { projects, setProjects } = useProjectsValues();
+  const { projects, setProjects } = useProjectsValue();
   const { setSelectedProject } = useSelectedProjectValue();
 
   const deleteProject = async (docId) => {
@@ -20,16 +20,6 @@ function IndividualProject({ project }) {
     } catch (error) {
       console.error(error);
     }
-
-    // firebase
-    //   .firestore()
-    //   .collection("projects")
-    //   .doc(docId)
-    //   .delete()
-    //   .then(() => {
-    //     setProjects([...projects]);
-    //     setSelectedProject("INBOX");
-    //   });
   };
 
   return (
@@ -40,8 +30,12 @@ function IndividualProject({ project }) {
         className="sidebar__project-delete"
         data-testid="delete-project"
         onClick={() => setShowConfirm(!showConfirm)}
-        // role="button"
-        // onKeyDown={() => setShowConfirm(!showConfirm)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") setShowConfirm(!showConfirm);
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label="Confirm deletion of project"
       >
         <FaTrash />
         {showConfirm && (

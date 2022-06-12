@@ -66,7 +66,6 @@ export const useProjects = () => {
 
   useEffect(() => {
     const projectsFunction = async () => {
-      // Get projects where userId is equal to '123abc'
       let projectsRef = collection(db, 'projects')
       let q = query(projectsRef, where('userId', '==', '123abc'))
 
@@ -93,23 +92,4 @@ export const useProjects = () => {
 
   return { projects, setProjects }
 
-  // useEffect(() => {
-  //     db
-  //         .firestore()
-  //         .collection('projects')
-  //         .where('userId', '==', '123abc')
-  //         .orderBy('projectId')
-  //         .get()
-  //         .then((snapshot) => {
-  //             const allProjects = snapshot.docs.map((project) => ({
-  //                 ...project.data(),
-  //                 docId: project.id
-  //             }))
-  //             if (JSON.stringify(allProjects) !== JSON.stringify(projects)) {
-  //                 setProjects(allProjects)
-  //             }
-  //         })
-  // }, [projects])
-
-  // return { projects, setProjects }
 }

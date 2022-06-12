@@ -1,14 +1,14 @@
 // TODO: Fix css for Projects that is commented out
 import React, { useState, useId } from "react";
 import PropTypes from "prop-types";
-import { useSelectedProjectValue, useProjectsValues } from "../context";
+import { useSelectedProjectValue, useProjectsValue } from "../context";
 import IndividualProject from "./IndividualProject";
 
 export const Projects = ({ activeValue = null }) => {
   const id = useId();
   const [active, setActive] = useState(activeValue);
   const { setSelectedProject } = useSelectedProjectValue();
-  const { projects } = useProjectsValues();
+  const { projects } = useProjectsValue();
 
   return (
     projects &&
