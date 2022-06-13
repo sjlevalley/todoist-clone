@@ -1,3 +1,4 @@
+// TODO: Fix Delete Modal
 import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useProjectsValue, useSelectedProjectValue } from "../context";
