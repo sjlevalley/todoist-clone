@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useId } from "react";
 import Checkbox from "./Checkbox";
+import AddTask from "./AddTask";
 import { useTasks } from "../hooks";
 import { projectTasks } from "../constants";
 import { getTitle, getCollatedTitle, projectTasksExist } from "../helpers";
@@ -22,7 +23,7 @@ function Tasks() {
 
   useEffect(() => {
     document.title = `${projectName}: Todoist`;
-  }, []);
+  }, [projectName]);
 
   return (
     <div className="tasks" data-testid="tasks">
@@ -45,6 +46,7 @@ function Tasks() {
           </li>
         </ul>
       )}
+      <AddTask />
     </div>
   );
 }
