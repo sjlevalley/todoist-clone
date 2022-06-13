@@ -3,9 +3,11 @@ import { FaRegListAlt, FaRegCalendarAlt } from "react-icons/fa";
 import moment from "moment";
 import PropTypes from "prop-types";
 import db from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 import { useSelectedProjectValue } from "../context";
 import ProjectOverlay from "./ProjectOverlay";
 import TaskDate from "./TaskDate";
+import { useEffect } from "react";
 
 function AddTask({
   showAddTaskMain = true,

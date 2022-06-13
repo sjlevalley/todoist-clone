@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useProjectsValue } from "../context";
+import { useEffect } from "react";
 
 function ProjectOverlay({
   setProject,
@@ -8,6 +9,10 @@ function ProjectOverlay({
   setShowProjectOverlay,
 }) {
   const { projects } = useProjectsValue();
+
+  //   useEffect(() => {
+  //     console.log(projects);
+  //   }, []);
 
   return (
     projects &&

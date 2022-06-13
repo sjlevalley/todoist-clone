@@ -22,6 +22,10 @@ function Tasks() {
   }
 
   useEffect(() => {
+    console.log(tasks);
+  }, [tasks]);
+
+  useEffect(() => {
     document.title = `${projectName}: Todoist`;
   }, [projectName]);
 
