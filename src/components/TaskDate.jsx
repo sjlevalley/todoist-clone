@@ -4,6 +4,17 @@ import { FaSpaceShuttle, FaSun, FaRegPaperPlane } from "react-icons/fa";
 import PropTypes from "prop-types";
 
 function TaskDate({ setTaskDate, showTaskDate, setShowTaskDate }) {
+  const handleClick = (e) => {
+    if (e) {
+      if (e.key === "Enter") {
+        setShowTaskDate(false);
+        setTaskDate(moment().format("DD/MM/YYYY"));
+      }
+    } else {
+      setShowTaskDate(false);
+      setTaskDate(moment().format("DD/MM/YYYY"));
+    }
+  };
   return (
     <>
       {showTaskDate && (
@@ -12,16 +23,8 @@ function TaskDate({ setTaskDate, showTaskDate, setShowTaskDate }) {
             <ul className="task-date__list">
               <li>
                 <div
-                  onClick={() => {
-                    setShowTaskDate(false);
-                    setTaskDate(moment().format("DD/MM/YYYY"));
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setShowTaskDate(false);
-                      setTaskDate(moment().format("DD/MM/YYYY"));
-                    }
-                  }}
+                  onClick={() => handleClick()}
+                  onKeyDown={(e) => handleClick(e)}
                   data-testid="task-date-today"
                   tabIndex={0}
                   aria-label="Select today as the task date"
