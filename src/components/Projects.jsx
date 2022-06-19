@@ -1,4 +1,3 @@
-// TODO: Fix css for Projects that is commented out
 import React, { useState, useId } from "react";
 import PropTypes from "prop-types";
 import { useSelectedProjectValue, useProjectsValue } from "../context";

@@ -2,7 +2,7 @@ import React from "react";
 import { render, cleanup, fireEvent } from '@testing-library/react'
 import Checkbox from "../components/Checkbox";
 
-beforeEach(cleanup); // clean the DOM!
+beforeEach(cleanup); // Cleans the DOM and resets back to baseline
 
 jest.mock('../firebase', () => ({
     firebase: {

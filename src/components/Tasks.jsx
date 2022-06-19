@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId } from "react";
+import React, { useEffect } from "react";
 import Checkbox from "./Checkbox";
 import AddTask from "./AddTask";
 import { useTasks } from "../hooks";
@@ -20,10 +20,6 @@ function Tasks() {
   if (selectedProject && projectTasksExist(selectedProject)) {
     projectName = getCollatedTitle(projectTasks, selectedProject)?.name;
   }
-
-  useEffect(() => {
-    console.log(tasks);
-  }, [tasks]);
 
   useEffect(() => {
     document.title = `${projectName}: Todoist`;

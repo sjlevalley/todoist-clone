@@ -423,18 +423,24 @@ nav {
   ============================================ */
 .project-delete-modal {
   position: fixed;
-  z-index: 100;
+  width: 300px;
 
   &__inner {
+    display: flex;
+    flex-direction: column;
     @include box-overlay();
     z-index: 99;
-    width: 200px;
-    padding: 10px;
     top: 10px;
     right: 0;
     background-color: white;
 
+    .btnContainer {
+      float: left !important;
+      width: 100%;
+    }
+
     p {
+      border: "1px solid red";
       margin-top: 5px;
       margin-bottom: 5px;
       line-height: normal;
@@ -444,6 +450,13 @@ nav {
 
     button {
       @include btn("50px");
+      margin-left: 10px;
+      &:hover {
+        transform: scale(1.05);
+      }
+      &:active {
+        transform: scale(0.95);
+      }
     }
     span {
       @include cancel();

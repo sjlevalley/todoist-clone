@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "firebase": "^9.6.10",
+    "jest": "^27.5.1",
     "moment": "^2.29.3",
     "node-sass": "^7.0.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-icons": "^4.3.1",
+    "react-redux": "^8.0.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -22,6 +25,18 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/index.js",
+      "!src/hooks/*.js",
+      "!src/context*.js"
+    ],
+    "coverageReporters": [
+      "html",
+      "text"
+    ]
   },
   "browserslist": {
     "production": [
@@ -34,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "jest-watch-typeahead": "^0.6.5"
   }
 }
