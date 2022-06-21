@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
   collection,
-  doc,
-  addDoc,
-  onSnapshot,
   query,
   where,
   getDocs

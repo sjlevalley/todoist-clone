@@ -1,13 +1,19 @@
-import React, { useState, useId } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useSelectedProjectValue, useProjectsValue } from "../context";
 import IndividualProject from "./IndividualProject";
+import { getProjectsAction } from "../redux/projectsSlice/projectsActions";
 
 export const Projects = ({ activeValue = null }) => {
-  const id = useId();
+  const dispatch = useDispatch();
   const [active, setActive] = useState(activeValue);
   const { setSelectedProject } = useSelectedProjectValue();
   const { projects } = useProjectsValue();
+
+  useEffect(() => {
+    dispatch(getProjectsAction());
+  }, []);
 
   return (
     <>
