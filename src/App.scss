@@ -252,6 +252,7 @@ nav {
   ============================================ */
 .sidebar {
   @include no-select();
+  border: 1px solid red;
   width: 266px;
   height: calc(100vh);
   padding-top: 74px;

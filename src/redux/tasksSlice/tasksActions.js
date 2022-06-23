@@ -12,7 +12,6 @@ import db from '../../firebase'
 export const getTasksAction = (selectedProject, projectId) => {
     return async (dispatch) => {
         const fetchData = async () => {
-            // 'INBOX' default
             let tasksRef = collection(db, 'tasks')
             let q = query(tasksRef, where('userId', '==', '123abc'))
             if (selectedProject === 'project') {
@@ -29,7 +28,6 @@ export const getTasksAction = (selectedProject, projectId) => {
                 }
                 tasks.push(taskObj)
             })
-            console.log(tasks)
             if (selectedProject === 'NEXT_7') {
                 tasks.filter(task => moment(task.date, 'DD-MM-YYYY').diff(moment(), 'days') <= 7 && task.archived !== true)
             } else {

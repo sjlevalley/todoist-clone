@@ -24,6 +24,7 @@ function AddTask({
   const [selectedProject, setSelectedProject] = useState();
 
   const project = useSelector((state) => state.projects.project);
+  const projects = useSelector((state) => state.projects.projects);
   const tasks = useSelector((state) => state.tasks.tasks);
 
   const { setTasks } = taskActions;
@@ -39,20 +40,22 @@ function AddTask({
     }
     if (task && project) {
       try {
+        console.log(project);
         const newTask = {
           archived: false,
-          projectId: selectedProject,
+          projectId: selectedProject || "",
           task,
           date: currentDate || selectedDate,
           userId: "123abc",
         };
-        await addDoc(collection(db, "tasks"), newTask);
-        const updatedTasks = [newTask, ...tasks];
-        dispatch(setTasks({ tasks: updatedTasks }));
-        setTask("");
-        setSelectedProject("");
-        setShowMain("");
-        setShowProjectOverlay(false);
+        console.log(newTask);
+        // await addDoc(collection(db, "tasks"), newTask);
+        // const updatedTasks = [newTask, ...tasks];
+        // dispatch(setTasks({ tasks: updatedTasks }));
+        // setTask("");
+        // setSelectedProject("");
+        // setShowMain("");
+        // setShowProjectOverlay(false);
       } catch (e) {
         console.error(e);
       }

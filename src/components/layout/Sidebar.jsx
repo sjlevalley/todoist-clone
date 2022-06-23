@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   FaChevronDown,
@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import { Projects } from "../Projects";
 import AddProject from "../AddProject";
+import { getProjectsAction } from "../../redux/projectsSlice/projectsActions";
 import { getTasksAction } from "../../redux/tasksSlice/tasksActions";
 import { projectActions } from "../../redux/projectsSlice/projectsSlice";
 
@@ -17,6 +18,10 @@ function Sidebar() {
   const [showProjects, setShowProjects] = useState(true);
 
   const { setProject } = projectActions;
+
+  useEffect(() => {
+    dispatch(getProjectsAction());
+  }, []);
 
   return (
     <div className="sidebar" data-testid="sidebar">
@@ -123,7 +128,9 @@ function Sidebar() {
         </span>
         <h2>Projects</h2>
       </div>
-      <ul className="sidebar__projects">{showProjects && <Projects />}</ul>
+      <ul className="sidebar__projects">
+        {showProjects && <Projects active={active} setActive={setActive} />}
+      </ul>
       {showProjects && <AddProject />}
     </div>
   );

@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import IndividualProject from "./IndividualProject";
-import { getProjectsAction } from "../redux/projectsSlice/projectsActions";
 import { projectActions } from "../redux/projectsSlice/projectsSlice";
 import { getTasksAction } from "../redux/tasksSlice/tasksActions";
 
-export const Projects = ({ activeValue = null }) => {
+export const Projects = ({ active, setActive }) => {
   const dispatch = useDispatch();
-  const [active, setActive] = useState(activeValue);
   const projects = useSelector((state) => state.projects.projects);
 
   const { setProject } = projectActions;
-
-  useEffect(() => {
-    dispatch(getProjectsAction());
-  }, []);
 
   const handleClick = (project) => {
     setActive(project.projectId);
