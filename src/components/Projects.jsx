@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { useSelectedProjectValue, useProjectsValue } from "../context";
 import IndividualProject from "./IndividualProject";
 import { getProjectsAction } from "../redux/projectsSlice/projectsActions";
+import { projectActions } from "../redux/projectsSlice/projectsSlice";
+import { getTasksAction } from "../redux/tasksSlice/tasksActions";
 
 export const Projects = ({ activeValue = null }) => {
   const dispatch = useDispatch();
   const [active, setActive] = useState(activeValue);
-  const { setSelectedProject } = useSelectedProjectValue();
-  const { projects } = useProjectsValue();
+  const projects = useSelector((state) => state.projects.projects);
+
+  const { setProject } = projectActions;
 
   useEffect(() => {
     dispatch(getProjectsAction());
   }, []);
+
+  const handleClick = (project) => {
+    setActive(project.projectId);
+    dispatch(setProject(project.name));
+    dispatch(getTasksAction("project", `${project.projectId}`));
+  };
 
   return (
     <>
@@ -34,14 +42,10 @@ export const Projects = ({ activeValue = null }) => {
               data-testid="project-action"
               tabIndex={0}
               aria-label={`Select ${project.name} as the task project`}
-              onClick={() => {
-                setActive(project.projectId);
-                setSelectedProject(project.projectId);
-              }}
+              onClick={() => handleClick(project)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  setActive(project.projectId);
-                  setSelectedProject(project.projectId);
+                  handleClick(project);
                 }
               }}
             >

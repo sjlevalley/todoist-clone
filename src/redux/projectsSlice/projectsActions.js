@@ -28,7 +28,6 @@ export const getProjectsAction = () => {
 
         try {
             const projects = await fetchData();
-            console.log(projects)
             dispatch(
                 projectActions.setProjects({ projects })
             );

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FaRegListAlt, FaRegCalendarAlt } from "react-icons/fa";
 import moment from "moment";
 import PropTypes from "prop-types";
 import db from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { useSelectedProjectValue } from "../context";
 import ProjectOverlay from "./ProjectOverlay";
 import TaskDate from "./TaskDate";
-import { useEffect } from "react";
+import { taskActions } from "../redux/tasksSlice/tasksSlice";
 
 function AddTask({
   showAddTaskMain = true,
@@ -15,38 +15,42 @@ function AddTask({
   showQuickAddTask,
   setShowQuickAddTask,
 }) {
+  const dispatch = useDispatch();
   const [task, setTask] = useState("");
-  const [taskDate, setTaskDate] = useState("");
-  const [project, setProject] = useState("");
+  const [selectedDate, setSelectedDate] = useState();
   const [showMain, setShowMain] = useState(shouldShowMain);
   const [showProjectOverlay, setShowProjectOverlay] = useState(false);
   const [showTaskDate, setShowTaskDate] = useState(false);
+  const [selectedProject, setSelectedProject] = useState();
 
-  const { selectedProject } = useSelectedProjectValue();
+  const project = useSelector((state) => state.projects.project);
+  const tasks = useSelector((state) => state.tasks.tasks);
+
+  const { setTasks } = taskActions;
 
   const addTask = async () => {
     if (task.trim() === "") {
       return console.error("Must enter a Task");
     }
-    const projectId = project || selectedProject;
-    let collatedDate = "";
+    let currentDate = moment().format("DD/MM/YYYY");
 
-    if (projectId === "TODAY") {
-      collatedDate = moment().format("DD/MM/YYYY");
-    } else if (projectId === "NEXT_7") {
-      collatedDate = moment().add(7, "days").format("DD/MM/YYYY");
+    if (project === "NEXT_7") {
+      currentDate = moment().add(7, "days").format("DD/MM/YYYY");
     }
-    if (task && projectId) {
+    if (task && project) {
       try {
-        await addDoc(collection(db, "tasks"), {
+        const newTask = {
           archived: false,
-          projectId,
+          projectId: selectedProject,
           task,
-          date: collatedDate || taskDate,
+          date: currentDate || selectedDate,
           userId: "123abc",
-        });
+        };
+        await addDoc(collection(db, "tasks"), newTask);
+        const updatedTasks = [newTask, ...tasks];
+        dispatch(setTasks({ tasks: updatedTasks }));
         setTask("");
-        setProject("");
+        setSelectedProject("");
         setShowMain("");
         setShowProjectOverlay(false);
       } catch (e) {
@@ -108,12 +112,12 @@ function AddTask({
             </>
           )}
           <ProjectOverlay
-            setProject={setProject}
+            setSelectedProject={setSelectedProject}
             showProjectOverlay={showProjectOverlay}
             setShowProjectOverlay={setShowProjectOverlay}
           />
           <TaskDate
-            setTaskDate={setTaskDate}
+            setSelectedDate={setSelectedDate}
             showTaskDate={showTaskDate}
             setShowTaskDate={setShowTaskDate}
           />

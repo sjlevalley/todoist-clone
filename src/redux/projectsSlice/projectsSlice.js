@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     projects: [],
-    project: {},
+    project: 'INBOX',
     loading: false,
     submitting: false
 }
@@ -13,6 +13,9 @@ export const projectsSlice = createSlice({
     reducers: {
         setProjects: (state, action) => {
             state.projects = action.payload.projects
+        },
+        setProject: (state, action) => {
+            state.project = action.payload
         }
     },
 })

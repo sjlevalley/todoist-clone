@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   FaChevronDown,
   FaInbox,
@@ -6,13 +7,16 @@ import {
   FaRegCalendar,
 } from "react-icons/fa";
 import { Projects } from "../Projects";
-import { useSelectedProjectValue } from "../../context";
 import AddProject from "../AddProject";
+import { getTasksAction } from "../../redux/tasksSlice/tasksActions";
+import { projectActions } from "../../redux/projectsSlice/projectsSlice";
 
 function Sidebar() {
-  const { setSelectedProject } = useSelectedProjectValue();
+  const dispatch = useDispatch();
   const [active, setActive] = useState("inbox");
   const [showProjects, setShowProjects] = useState(true);
+
+  const { setProject } = projectActions;
 
   return (
     <div className="sidebar" data-testid="sidebar">
@@ -28,12 +32,14 @@ function Sidebar() {
             role="button"
             onClick={() => {
               setActive("inbox");
-              setSelectedProject("INBOX");
+              dispatch(setProject("INBOX"));
+              dispatch(getTasksAction("INBOX"));
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 setActive("inbox");
-                setSelectedProject("INBOX");
+                dispatch(setProject("INBOX"));
+                dispatch(getTasksAction("INBOX"));
               }
             }}
           >
@@ -54,12 +60,14 @@ function Sidebar() {
             role="button"
             onClick={() => {
               setActive("today");
-              setSelectedProject("TODAY");
+              dispatch(setProject("TODAY"));
+              dispatch(getTasksAction("TODAY"));
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 setActive("today");
-                setSelectedProject("TODAY");
+                dispatch(setProject("TODAY"));
+                dispatch(getTasksAction("TODAY"));
               }
             }}
           >
@@ -80,12 +88,14 @@ function Sidebar() {
             role="button"
             onClick={() => {
               setActive("next_7");
-              setSelectedProject("NEXT_7");
+              dispatch(setProject("NEXT_7"));
+              dispatch(getTasksAction("NEXT_7"));
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 setActive("next_7");
-                setSelectedProject("NEXT_7");
+                dispatch(setProject("NEXT_7"));
+                dispatch(getTasksAction("NEXT_7"));
               }
             }}
           >

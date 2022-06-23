@@ -3,16 +3,16 @@ import moment from "moment";
 import { FaSpaceShuttle, FaSun, FaRegPaperPlane } from "react-icons/fa";
 import PropTypes from "prop-types";
 
-function TaskDate({ setTaskDate, showTaskDate, setShowTaskDate }) {
+function TaskDate({ setSelectedDate, showTaskDate, setShowTaskDate }) {
   const handleClick = (e) => {
     if (e) {
       if (e.key === "Enter") {
         setShowTaskDate(false);
-        setTaskDate(moment().format("DD/MM/YYYY"));
+        setSelectedDate(moment().format("DD/MM/YYYY"));
       }
     } else {
       setShowTaskDate(false);
-      setTaskDate(moment().format("DD/MM/YYYY"));
+      setSelectedDate(moment().format("DD/MM/YYYY"));
     }
   };
   return (
@@ -40,12 +40,16 @@ function TaskDate({ setTaskDate, showTaskDate, setShowTaskDate }) {
                 <div
                   onClick={() => {
                     setShowTaskDate(false);
-                    setTaskDate(moment().add(1, "day").format("DD/MM/YYYY"));
+                    setSelectedDate(
+                      moment().add(1, "day").format("DD/MM/YYYY")
+                    );
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       setShowTaskDate(false);
-                      setTaskDate(moment().add(1, "day").format("DD/MM/YYYY"));
+                      setSelectedDate(
+                        moment().add(1, "day").format("DD/MM/YYYY")
+                      );
                     }
                   }}
                   data-testid="task-date-tomorrow"
@@ -63,12 +67,16 @@ function TaskDate({ setTaskDate, showTaskDate, setShowTaskDate }) {
                 <div
                   onClick={() => {
                     setShowTaskDate(false);
-                    setTaskDate(moment().add(7, "days").format("DD/MM/YYYY"));
+                    setSelectedDate(
+                      moment().add(7, "days").format("DD/MM/YYYY")
+                    );
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       setShowTaskDate(false);
-                      setTaskDate(moment().add(7, "days").format("DD/MM/YYYY"));
+                      setSelectedDate(
+                        moment().add(7, "days").format("DD/MM/YYYY")
+                      );
                     }
                   }}
                   data-testid="task-date-next-week"

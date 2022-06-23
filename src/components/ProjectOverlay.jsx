@@ -1,18 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useProjectsValue } from "../context";
-import { useEffect } from "react";
 
 function ProjectOverlay({
-  setProject,
+  setSelectedProject,
   showProjectOverlay,
   setShowProjectOverlay,
 }) {
   const { projects } = useProjectsValue();
-
-  //   useEffect(() => {
-  //     console.log(projects);
-  //   }, []);
 
   return (
     projects &&
@@ -24,12 +19,12 @@ function ProjectOverlay({
               <div
                 data-testid="project-overlay-action"
                 onClick={() => {
-                  setProject(project.projectId);
+                  setSelectedProject(project.projectId);
                   setShowProjectOverlay(false);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    setProject(project.projectId);
+                    setSelectedProject(project.projectId);
                     setShowProjectOverlay(false);
                   }
                 }}

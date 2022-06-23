@@ -1,25 +1,11 @@
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Checkbox from "./Checkbox";
 import AddTask from "./AddTask";
-import { useTasks } from "../hooks";
-import { projectTasks } from "../constants";
-import { getTitle, getCollatedTitle, projectTasksExist } from "../helpers";
-import { useSelectedProjectValue, useProjectsValue } from "../context";
 
 function Tasks() {
-  const { selectedProject } = useSelectedProjectValue();
-  const { projects } = useProjectsValue();
-  const { tasks, archivedTasks } = useTasks(selectedProject);
-
-  let projectName = "";
-
-  if (selectedProject && !projectTasksExist(selectedProject)) {
-    projectName = getTitle(projects, selectedProject)?.name;
-  }
-
-  if (selectedProject && projectTasksExist(selectedProject)) {
-    projectName = getCollatedTitle(projectTasks, selectedProject)?.name;
-  }
+  const tasks = useSelector((state) => state.tasks.tasks);
+  const projectName = useSelector((state) => state.projects.project);
 
   useEffect(() => {
     document.title = `${projectName}: Todoist`;
@@ -32,7 +18,7 @@ function Tasks() {
         <>
           <ul className="tasks__list">
             {tasks.map((task) => (
-              <li key={`${task.id}`}>
+              <li key={task.id}>
                 <Checkbox id={task.id} />
                 <span>{task.task}</span>
               </li>
