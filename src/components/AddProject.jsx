@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 import db from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { projectActions } from "../redux/projectsSlice/projectsSlice";
+import { getProjectsAction } from "../redux/projectsSlice/projectsActions";
+import { taskActions } from "../redux/tasksSlice/tasksSlice";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -45,6 +47,7 @@ function AddProject() {
   const projects = useSelector((state) => state.projects.projects);
 
   const { setProjects, setProject } = projectActions;
+  const { setTasks } = taskActions;
 
   const projectId = useId() + Math.random();
 
@@ -67,10 +70,11 @@ function AddProject() {
         userId: "123abc",
       };
       await addDoc(collection(db, "projects"), newProject);
-      dispatch(setProjects({ projects: [...projects, newProject] }));
+      dispatch(getProjectsAction());
       setProjectName("");
       setDialogOpen(false);
       dispatch(setProject(projectName));
+      dispatch(setTasks({ tasks: [] }));
     } catch (e) {
       console.error(e);
     }

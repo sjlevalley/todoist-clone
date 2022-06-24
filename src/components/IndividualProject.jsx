@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
 import styled from "styled-components";
-import { useProjectsValue, useSelectedProjectValue } from "../context";
 import { projectActions } from "../redux/projectsSlice/projectsSlice";
 
 import db from "../firebase";
@@ -55,7 +54,6 @@ function IndividualProject({ project }) {
   const { setProjects, setProject } = projectActions;
 
   const deleteProject = async (docId) => {
-    console.log(docId);
     let tasksRef = collection(db, "tasks");
     let q = query(tasksRef, where("projectId", "==", docId));
     try {
