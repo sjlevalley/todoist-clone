@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 import {
   FaChevronDown,
   FaInbox,
   FaRegCalendarAlt,
   FaRegCalendar,
 } from "react-icons/fa";
-import { Projects } from "../Projects";
+
 import AddProject from "../AddProject";
 import { getProjectsAction } from "../../redux/projectsSlice/projectsActions";
 import { getTasksAction } from "../../redux/tasksSlice/tasksActions";
+import { Projects } from "../Projects";
 import { projectActions } from "../../redux/projectsSlice/projectsSlice";
+
+const StyledAddProject = styled.div`
+  margin: 10px 0 0 15px;
+  transition: transform 0.1s;
+  :hover {
+    transform: scale(1.02);
+  }
+  :active {
+    transform: scale(0.98);
+  }
+`;
 
 function Sidebar() {
   const dispatch = useDispatch();
-  const [active, setActive] = useState("inbox");
+  const project = useSelector((state) => state.projects.project);
+  const [active, setActive] = useState(project);
   const [showProjects, setShowProjects] = useState(true);
 
   const { setProject } = projectActions;
@@ -23,12 +37,16 @@ function Sidebar() {
     dispatch(getProjectsAction());
   }, []);
 
+  useEffect(() => {
+    setActive(project);
+  }, [project]);
+
   return (
     <div className="sidebar" data-testid="sidebar">
       <ul className="sidebar__generic">
         <li
           data-testid="inbox"
-          className={active === "inbox" ? "active" : undefined}
+          className={active === "INBOX" ? "active" : undefined}
         >
           <div
             data-testid="inbox-action"
@@ -36,13 +54,11 @@ function Sidebar() {
             tabIndex={0}
             role="button"
             onClick={() => {
-              setActive("inbox");
               dispatch(setProject("INBOX"));
               dispatch(getTasksAction("INBOX"));
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                setActive("inbox");
                 dispatch(setProject("INBOX"));
                 dispatch(getTasksAction("INBOX"));
               }
@@ -56,7 +72,7 @@ function Sidebar() {
         </li>
         <li
           data-testid="today"
-          className={active === "today" ? "active" : undefined}
+          className={active === "TODAY" ? "active" : undefined}
         >
           <div
             data-testid="today-action"
@@ -64,13 +80,11 @@ function Sidebar() {
             tabIndex={0}
             role="button"
             onClick={() => {
-              setActive("today");
               dispatch(setProject("TODAY"));
               dispatch(getTasksAction("TODAY"));
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                setActive("today");
                 dispatch(setProject("TODAY"));
                 dispatch(getTasksAction("TODAY"));
               }
@@ -84,7 +98,7 @@ function Sidebar() {
         </li>
         <li
           data-testid="next_7"
-          className={active === "next_7" ? "active" : undefined}
+          className={active === "NEXT_7" ? "active" : undefined}
         >
           <div
             data-testid="next_7-action"
@@ -92,13 +106,11 @@ function Sidebar() {
             tabIndex={0}
             role="button"
             onClick={() => {
-              setActive("next_7");
               dispatch(setProject("NEXT_7"));
               dispatch(getTasksAction("NEXT_7"));
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                setActive("next_7");
                 dispatch(setProject("NEXT_7"));
                 dispatch(getTasksAction("NEXT_7"));
               }
@@ -131,7 +143,7 @@ function Sidebar() {
       <ul className="sidebar__projects">
         {showProjects && <Projects active={active} setActive={setActive} />}
       </ul>
-      {showProjects && <AddProject />}
+      <StyledAddProject>{showProjects && <AddProject />}</StyledAddProject>
     </div>
   );
 }

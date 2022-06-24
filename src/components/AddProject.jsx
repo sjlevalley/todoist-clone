@@ -1,8 +1,10 @@
 import React, { useState, useId } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import db from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { useProjectsValue } from "../context";
+import { projectActions } from "../redux/projectsSlice/projectsSlice";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -12,12 +14,39 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import AddIcon from "@mui/icons-material/Add";
 
+const StyledAddBtn = styled(Button)`
+  margin-right: 15px !important;
+  background-color: #db4c3f !important;
+  color: white !important;
+  transition: all 0.1s;
+  :hover {
+    transform: scale(1.02);
+  }
+  :active {
+    transform: scale(0.98);
+  }
+`;
+const StyledCancelBtn = styled(Button)`
+  border-color: #db4c3f !important;
+  color: #db4c3f !important;
+  transition: transform 0.1s;
+  :hover {
+    transform: scale(1.02);
+  }
+  :active {
+    transform: scale(0.98);
+  }
+`;
+
 function AddProject() {
+  const dispatch = useDispatch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
+  const projects = useSelector((state) => state.projects.projects);
 
-  const projectId = useId();
-  const { projects, setProjects } = useProjectsValue();
+  const { setProjects, setProject } = projectActions;
+
+  const projectId = useId() + Math.random();
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -31,19 +60,20 @@ function AddProject() {
     if (projectName.trim() === "") {
       return console.error("Must enter a Project Name");
     }
-    console.log(projectName);
-    // try {
-    //   const docRef = await addDoc(collection(db, "projects"), {
-    //     projectId,
-    //     name: projectName,
-    //     userId: "123abc",
-    //   });
-    //   setProjects([...projects]);
-    //   setProjectName("");
-    //   setShow(false);
-    // } catch (e) {
-    //   console.error(e);
-    // }
+    try {
+      const newProject = {
+        projectId,
+        name: projectName,
+        userId: "123abc",
+      };
+      await addDoc(collection(db, "projects"), newProject);
+      dispatch(setProjects({ projects: [...projects, newProject] }));
+      setProjectName("");
+      setDialogOpen(false);
+      dispatch(setProject(projectName));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -80,12 +110,12 @@ function AddProject() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} variant="outlined">
+          <StyledCancelBtn onClick={handleDialogClose} variant="outlined">
             Cancel
-          </Button>
-          <Button onClick={addProject} variant="outlined">
+          </StyledCancelBtn>
+          <StyledAddBtn onClick={addProject} variant="text">
             Add Project
-          </Button>
+          </StyledAddBtn>
         </DialogActions>
       </Dialog>
     </div>
@@ -97,88 +127,3 @@ AddProject.propTypes = {
 };
 
 export default AddProject;
-
-// function AddProject({ shouldShow = false }) {
-//   const [show, setShow] = useState(shouldShow);
-//   const [projectName, setProjectName] = useState("");
-
-//   const projectId = useId();
-//   const { projects, setProjects } = useProjectsValue();
-
-//   const addProject = async () => {
-//     if (projectName.trim() === "") {
-//       return console.error("Must enter a Project Name");
-//     }
-//     try {
-//       const docRef = await addDoc(collection(db, "projects"), {
-//         projectId,
-//         name: projectName,
-//         userId: "123abc",
-//       });
-//       setProjects([...projects]);
-//       setProjectName("");
-//       setShow(false);
-//     } catch (e) {
-//       console.error(e);
-//     }
-//   };
-
-//   return (
-//     <div className="add-project" data-testid="add-project">
-//       {show && (
-//         <div className="add-project__input" data-testid="add-project-inner">
-//           <input
-//             value={projectName}
-//             onChange={(e) => setProjectName(e.target.value)}
-//             className="add-project__name"
-//             data-testid="project-name"
-//             type="text"
-//             placeholder="Name your project"
-//           />
-//           <button
-//             className="add-project__submit"
-//             type="button"
-//             onClick={() => addProject()}
-//             data-testid="add-project-submit"
-//           >
-//             Add Project
-//           </button>
-//           <span
-//             aria-label="Cancel adding project"
-//             data-testid="hide-project-overlay"
-//             className="add-project__cancel"
-//             onClick={() => setShow(false)}
-//             onKeyDown={(e) => {
-//               if (e.key === "Enter") setShow(false);
-//             }}
-//             role="button"
-//             tabIndex={0}
-//           >
-//             Cancel
-//           </span>
-//         </div>
-//       )}
-//       <span className="add-project__plus">+</span>
-//       <span
-//         aria-label="Add Project"
-//         data-testid="add-project-action"
-//         className="add-project__text"
-//         onClick={() => setShow(!show)}
-//         onKeyDown={(e) => {
-//           if (e.key === "Enter") setShow(!show);
-//         }}
-//         role="button"
-//         tabIndex={0}
-//       >
-//         {" "}
-//         Add Project
-//       </span>
-//     </div>
-//   );
-// }
-
-// AddProject.propTypes = {
-//   shouldShow: PropTypes.bool,
-// };
-
-// export default AddProject;

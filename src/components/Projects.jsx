@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+
 import IndividualProject from "./IndividualProject";
 import { projectActions } from "../redux/projectsSlice/projectsSlice";
 import { getTasksAction } from "../redux/tasksSlice/tasksActions";
 
-export const Projects = ({ active, setActive }) => {
+export const Projects = ({ active }) => {
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.projects.projects);
 
   const { setProject } = projectActions;
 
   const handleClick = (project) => {
-    setActive(project.projectId);
     dispatch(setProject(project.name));
     dispatch(getTasksAction("project", `${project.projectId}`));
   };
@@ -26,7 +26,7 @@ export const Projects = ({ active, setActive }) => {
             data-testid="project-action-parent"
             data-doc-id={project.docId}
             className={
-              active === project.projectId
+              active === project.name
                 ? "active sidebar__project"
                 : "sidebar__project"
             }
