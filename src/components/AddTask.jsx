@@ -1,26 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaRegListAlt, FaRegCalendarAlt } from "react-icons/fa";
 import moment from "moment";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import db from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
-import ProjectOverlay from "./ProjectOverlay";
-import TaskDate from "./TaskDate";
 import { taskActions } from "../redux/tasksSlice/tasksSlice";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import AddIcon from "@mui/icons-material/Add";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
-function AddTask({
-  showAddTaskMain = true,
-  shouldShowMain = false,
-  showQuickAddTask,
-  setShowQuickAddTask,
-}) {
+const StyledAddBtn = styled(Button)`
+  margin-right: 15px !important;
+  background-color: #db4c3f !important;
+  color: white !important;
+  transition: all 0.1s;
+  :hover {
+    transform: scale(1.02);
+  }
+  :active {
+    transform: scale(0.98);
+  }
+`;
+const StyledCancelBtn = styled(Button)`
+  border-color: #db4c3f !important;
+  color: #db4c3f !important;
+  transition: transform 0.1s;
+  :hover {
+    transform: scale(1.02);
+  }
+  :active {
+    transform: scale(0.98);
+  }
+`;
+
+function AddTask() {
   const dispatch = useDispatch();
-  const [task, setTask] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [taskName, setTaskName] = useState("");
   const [selectedDate, setSelectedDate] = useState();
-  const [showMain, setShowMain] = useState(shouldShowMain);
-  const [showProjectOverlay, setShowProjectOverlay] = useState(false);
-  const [showTaskDate, setShowTaskDate] = useState(false);
   const [selectedProject, setSelectedProject] = useState();
 
   const project = useSelector((state) => state.projects.project);
@@ -28,6 +58,14 @@ function AddTask({
   const tasks = useSelector((state) => state.tasks.tasks);
 
   const { setTasks } = taskActions;
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
 
   const addTask = async () => {
     if (task.trim() === "") {
@@ -40,7 +78,6 @@ function AddTask({
     }
     if (task && project) {
       try {
-        console.log(project);
         const newTask = {
           archived: false,
           projectId: selectedProject || "",
@@ -48,7 +85,6 @@ function AddTask({
           date: currentDate || selectedDate,
           userId: "123abc",
         };
-        console.log(newTask);
         // await addDoc(collection(db, "tasks"), newTask);
         // const updatedTasks = [newTask, ...tasks];
         // dispatch(setTasks({ tasks: updatedTasks }));
@@ -62,135 +98,95 @@ function AddTask({
     }
   };
 
-  return (
-    <div
-      className={showQuickAddTask ? "add-task add-task__overlay" : "add-task"}
-      data-testid="add-task-comp"
-    >
-      {showAddTaskMain && (
-        <div
-          className="add-task__shallow"
-          data-testid="show-main-action"
-          onClick={() => setShowMain(!showMain)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") setShowMain(!showMain);
-          }}
-          tabIndex={0}
-          aria-label="Add task"
-          role="button"
-        >
-          <span className="add-task__plus">+</span>
-          <span className="add-task__text">Add Task</span>
-        </div>
-      )}
+  useEffect(() => {}, []);
 
-      {(showMain || showQuickAddTask) && (
-        <div className="add-task__main" data-testid="add-task-main">
-          {showQuickAddTask && (
-            <>
-              <div data-testid="quick-add-task">
-                <h2 className="header">Quick Add Task</h2>
-                <span
-                  className="add-task__cancel-x"
-                  data-testid="add-task-quick-cancel"
-                  aria-label="Cancel adding task"
-                  onClick={() => {
-                    setShowMain(false);
-                    setShowProjectOverlay(false);
-                    setShowQuickAddTask(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setShowMain(false);
-                      setShowProjectOverlay(false);
-                      setShowQuickAddTask(false);
-                    }
-                  }}
-                  tabIndex={0}
-                  role="button"
-                >
-                  X
-                </span>
-              </div>
-            </>
-          )}
-          <ProjectOverlay
-            setSelectedProject={setSelectedProject}
-            showProjectOverlay={showProjectOverlay}
-            setShowProjectOverlay={setShowProjectOverlay}
-          />
-          <TaskDate
-            setSelectedDate={setSelectedDate}
-            showTaskDate={showTaskDate}
-            setShowTaskDate={setShowTaskDate}
-          />
-          <input
-            className="add-task__content"
-            aria-label="Enter your task"
-            data-testid="add-task-content"
-            type="text"
-            value={task}
-            onChange={(e) => setTask(e.target.value)}
-          />
-          <button
-            type="button"
-            className="add-task__submit"
-            data-testid="add-task"
-            onClick={() =>
-              showQuickAddTask
-                ? addTask() && setShowQuickAddTask(false)
-                : addTask()
-            }
+  useEffect(() => {
+    console.log(selectedProject);
+  }, [selectedProject]);
+
+  useEffect(() => {
+    if (project === "INBOX" || project === "TODAY" || project === "NEXT_7") {
+      setSelectedProject(() => projects[0]?.docId);
+    } else {
+      const currentProject = projects.find((p) => p.name === project);
+      setSelectedProject(currentProject?.docId);
+    }
+  }, [project]);
+
+  const renderMenuItems = () =>
+    projects.map((p) => (
+      <MenuItem key={p?.docId} value={p?.docId}>
+        {p.name}
+      </MenuItem>
+    ));
+
+  return (
+    <div>
+      <Button
+        size="small"
+        style={{
+          backgroundColor: "#dd4b39",
+          border: "none",
+          color: "white",
+          margin: "10px 0",
+        }}
+        startIcon={<AddIcon />}
+        data-testid="add-task-button"
+        variant="outlined"
+        onClick={handleDialogOpen}
+      >
+        Add Task
+      </Button>
+
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle style={{ width: "500px" }}>Add Task</DialogTitle>
+        <DialogContent>
+          <Stack spacing={4}>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              fullWidth
+              variant="standard"
+              required
+              onChange={(e) => setTaskName(() => e.target.value)}
+            />
+            <div>
+              <InputLabel id="task-project-select-label">Project</InputLabel>
+              <Select
+                labelId="task-project-select-label"
+                id="task-project-select"
+                fullWidth
+                data-testid="task-project-select"
+                value={selectedProject}
+                label="Project"
+                onChange={(e) => setSelectedProject(e.target.value)}
+              >
+                {renderMenuItems()}
+              </Select>
+            </div>
+            {/* <DesktopDatePicker
+              label="Date desktop"
+              inputFormat="MM/dd/yyyy"
+              // value={value}
+              // onChange={handleChange}
+              // renderInput={(params) => <TextField {...params} />}
+            /> */}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <StyledCancelBtn onClick={handleDialogClose} variant="outlined">
+            Cancel
+          </StyledCancelBtn>
+          <StyledAddBtn
+            // onClick={addTask}
+            variant="text"
           >
             Add Task
-          </button>
-          {!showQuickAddTask && (
-            <span
-              className="add-task__cancel"
-              data-testid="add-task-main-cancel"
-              onClick={() => {
-                setShowMain(false);
-                setShowProjectOverlay(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  setShowMain(false);
-                  setShowProjectOverlay(false);
-                }
-              }}
-              aria-label="Cancel adding a task"
-              tabIndex={0}
-              role="button"
-            >
-              Cancel
-            </span>
-          )}
-          <span
-            className="add-task__project"
-            data-testid="show-project-overlay"
-            onClick={() => setShowProjectOverlay(!showProjectOverlay)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") setShowProjectOverlay(!showProjectOverlay);
-            }}
-            tabIndex={0}
-            role="button"
-          >
-            <FaRegListAlt />
-          </span>
-          <span
-            className="add-task__date"
-            data-testid="show-task-date-overlay"
-            onClick={() => setShowTaskDate(!showTaskDate)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") setShowTaskDate(!showTaskDate);
-            }}
-            tabIndex={0}
-            role="button"
-          >
-            <FaRegCalendarAlt />
-          </span>
-        </div>
-      )}
+          </StyledAddBtn>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
