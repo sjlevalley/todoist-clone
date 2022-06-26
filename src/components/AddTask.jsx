@@ -1,31 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaRegListAlt, FaRegCalendarAlt } from "react-icons/fa";
 import moment from "moment";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import db from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { taskActions } from "../redux/tasksSlice/tasksSlice";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import AddIcon from "@mui/icons-material/Add";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
 
 const StyledAddBtn = styled(Button)`
-  margin-right: 15px !important;
+  margin: 15px 15px 15px 0 !important;
   background-color: #db4c3f !important;
+  border: 1px solid #db4c3f !important;
   color: white !important;
+  font-size: 12px !important;
   transition: all 0.1s;
   :hover {
     transform: scale(1.02);
@@ -37,6 +38,8 @@ const StyledAddBtn = styled(Button)`
 const StyledCancelBtn = styled(Button)`
   border-color: #db4c3f !important;
   color: #db4c3f !important;
+  font-size: 12px !important;
+  margin-right: 10px !important;
   transition: transform 0.1s;
   :hover {
     transform: scale(1.02);
@@ -48,10 +51,12 @@ const StyledCancelBtn = styled(Button)`
 
 function AddTask() {
   const dispatch = useDispatch();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [taskName, setTaskName] = useState("");
-  const [selectedDate, setSelectedDate] = useState();
-  const [selectedProject, setSelectedProject] = useState();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDateChanged, setSelectedDateChanged] = useState(false);
+  const [selectedProject, setSelectedProject] = useState({});
 
   const project = useSelector((state) => state.projects.project);
   const projects = useSelector((state) => state.projects.projects);
@@ -59,84 +64,85 @@ function AddTask() {
 
   const { setTasks } = taskActions;
 
+  const setInitialProject = () => {
+    if (project === "INBOX" || project === "TODAY" || project === "NEXT_7") {
+      setSelectedProject(() => projects[0]?.projectId);
+    } else {
+      const currentProject = projects.find((p) => p.name === project);
+      setSelectedProject(currentProject?.projectId);
+    }
+  };
+
+  useEffect(() => {
+    setInitialProject();
+  }, [project]);
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
 
   const handleDialogClose = () => {
+    setTaskName(() => "");
+    setSelectedDate(() => undefined);
+    setInitialProject();
     setDialogOpen(false);
   };
 
   const addTask = async () => {
-    if (task.trim() === "") {
+    if (taskName.trim() === "") {
       return console.error("Must enter a Task");
     }
-    let currentDate = moment().format("DD/MM/YYYY");
+    let taskDate = moment(selectedDate).format("MM/DD/YYYY");
 
-    if (project === "NEXT_7") {
-      currentDate = moment().add(7, "days").format("DD/MM/YYYY");
+    if (project === "NEXT_7" && !selectedDateChanged) {
+      taskDate = moment().add(7, "days").format("MM/DD/YYYY");
     }
-    if (task && project) {
+    if (taskName && project) {
       try {
         const newTask = {
           archived: false,
           projectId: selectedProject || "",
-          task,
-          date: currentDate || selectedDate,
+          task: taskName,
+          date: taskDate,
           userId: "123abc",
         };
-        // await addDoc(collection(db, "tasks"), newTask);
-        // const updatedTasks = [newTask, ...tasks];
-        // dispatch(setTasks({ tasks: updatedTasks }));
-        // setTask("");
-        // setSelectedProject("");
-        // setShowMain("");
-        // setShowProjectOverlay(false);
+        console.log(newTask);
+        await addDoc(collection(db, "tasks"), newTask);
+        const updatedTasks = [newTask, ...tasks];
+        dispatch(setTasks({ tasks: updatedTasks }));
+        setTaskName("");
+        setSelectedProject("");
+        setSelectedDate(undefined);
+        setDialogOpen(false);
       } catch (e) {
         console.error(e);
       }
     }
   };
 
-  useEffect(() => {}, []);
-
-  useEffect(() => {
-    console.log(selectedProject);
-  }, [selectedProject]);
-
-  useEffect(() => {
-    if (project === "INBOX" || project === "TODAY" || project === "NEXT_7") {
-      setSelectedProject(() => projects[0]?.docId);
-    } else {
-      const currentProject = projects.find((p) => p.name === project);
-      setSelectedProject(currentProject?.docId);
-    }
-  }, [project]);
-
   const renderMenuItems = () =>
     projects.map((p) => (
-      <MenuItem key={p?.docId} value={p?.docId}>
+      <MenuItem key={p?.projectId} value={p?.projectId}>
         {p.name}
       </MenuItem>
     ));
 
+  const handleDateChange = (newValue) => {
+    setSelectedDate(() => newValue);
+    setSelectedDateChanged(() => true);
+  };
+
   return (
     <div>
-      <Button
+      <StyledAddBtn
         size="small"
-        style={{
-          backgroundColor: "#dd4b39",
-          border: "none",
-          color: "white",
-          margin: "10px 0",
-        }}
         startIcon={<AddIcon />}
         data-testid="add-task-button"
         variant="outlined"
         onClick={handleDialogOpen}
       >
         Add Task
-      </Button>
+      </StyledAddBtn>
 
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle style={{ width: "500px" }}>Add Task</DialogTitle>
@@ -144,45 +150,45 @@ function AddTask() {
           <Stack spacing={4}>
             <TextField
               autoFocus
-              margin="dense"
-              id="name"
-              label="Name"
               fullWidth
-              variant="standard"
-              required
+              id="name"
+              inputProps={{ maxLength: 150 }}
+              label="Task Name"
+              margin="dense"
               onChange={(e) => setTaskName(() => e.target.value)}
+              required
+              variant="standard"
             />
             <div>
               <InputLabel id="task-project-select-label">Project</InputLabel>
               <Select
-                labelId="task-project-select-label"
-                id="task-project-select"
-                fullWidth
                 data-testid="task-project-select"
-                value={selectedProject}
+                fullWidth
+                id="task-project-select"
                 label="Project"
+                labelId="task-project-select-label"
                 onChange={(e) => setSelectedProject(e.target.value)}
+                value={selectedProject}
               >
                 {renderMenuItems()}
               </Select>
             </div>
-            {/* <DesktopDatePicker
-              label="Date desktop"
-              inputFormat="MM/dd/yyyy"
-              // value={value}
-              // onChange={handleChange}
-              // renderInput={(params) => <TextField {...params} />}
-            /> */}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                label="Date desktop"
+                inputFormat="MM/dd/yyyy"
+                value={selectedDate}
+                onChange={handleDateChange}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
           </Stack>
         </DialogContent>
         <DialogActions>
           <StyledCancelBtn onClick={handleDialogClose} variant="outlined">
             Cancel
           </StyledCancelBtn>
-          <StyledAddBtn
-            // onClick={addTask}
-            variant="text"
-          >
+          <StyledAddBtn onClick={addTask} variant="text">
             Add Task
           </StyledAddBtn>
         </DialogActions>

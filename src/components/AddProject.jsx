@@ -88,6 +88,7 @@ function AddProject() {
           backgroundColor: "#dd4b39",
           border: "none",
           color: "white",
+          fontSize: "12px",
         }}
         startIcon={<AddIcon />}
         data-testid="add-project"
