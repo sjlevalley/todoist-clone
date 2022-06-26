@@ -1,32 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import styled from "styled-components";
 import PropTypes from "prop-types";
-import db from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
-import { taskActions } from "../redux/tasksSlice/tasksSlice";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import styled from "styled-components";
+// MUI Components
+import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import AddIcon from "@mui/icons-material/Add";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// Local
+import db from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { taskActions } from "../redux/tasksSlice/tasksSlice";
 
 const StyledAddBtn = styled(Button)`
-  margin: 15px 15px 15px 0 !important;
   background-color: #db4c3f !important;
   border: 1px solid #db4c3f !important;
   color: white !important;
   font-size: 12px !important;
+  margin: 15px 15px 15px 0 !important;
   transition: all 0.1s;
   :hover {
     transform: scale(1.02);
@@ -52,17 +54,22 @@ const StyledCancelBtn = styled(Button)`
 function AddTask() {
   const dispatch = useDispatch();
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [taskName, setTaskName] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedDateChanged, setSelectedDateChanged] = useState(false);
   const [selectedProject, setSelectedProject] = useState({});
+  const [taskName, setTaskName] = useState("");
 
+  const addTaskDialogOpen = useSelector(
+    (state) => state.tasks.addTaskDialogOpen
+  );
   const project = useSelector((state) => state.projects.project);
   const projects = useSelector((state) => state.projects.projects);
   const tasks = useSelector((state) => state.tasks.tasks);
 
-  const { setTasks } = taskActions;
+  const { setTasks, toggleAddTask } = taskActions;
+
+  useEffect(() => {
+    setInitialProject();
+  }, [project]);
 
   const setInitialProject = () => {
     if (project === "INBOX" || project === "TODAY" || project === "NEXT_7") {
@@ -73,51 +80,19 @@ function AddTask() {
     }
   };
 
-  useEffect(() => {
-    setInitialProject();
-  }, [project]);
-
   const handleDialogOpen = () => {
-    setDialogOpen(true);
+    dispatch(toggleAddTask(true));
   };
 
   const handleDialogClose = () => {
     setTaskName(() => "");
-    setSelectedDate(() => undefined);
+    setSelectedDate(() => new Date());
     setInitialProject();
-    setDialogOpen(false);
+    dispatch(toggleAddTask(false));
   };
 
-  const addTask = async () => {
-    if (taskName.trim() === "") {
-      return console.error("Must enter a Task");
-    }
-    let taskDate = moment(selectedDate).format("MM/DD/YYYY");
-
-    if (project === "NEXT_7" && !selectedDateChanged) {
-      taskDate = moment().add(7, "days").format("MM/DD/YYYY");
-    }
-    if (taskName && project) {
-      try {
-        const newTask = {
-          archived: false,
-          projectId: selectedProject || "",
-          task: taskName,
-          date: taskDate,
-          userId: "123abc",
-        };
-        console.log(newTask);
-        await addDoc(collection(db, "tasks"), newTask);
-        const updatedTasks = [newTask, ...tasks];
-        dispatch(setTasks({ tasks: updatedTasks }));
-        setTaskName("");
-        setSelectedProject("");
-        setSelectedDate(undefined);
-        setDialogOpen(false);
-      } catch (e) {
-        console.error(e);
-      }
-    }
+  const handleDateChange = (newValue) => {
+    setSelectedDate(() => newValue);
   };
 
   const renderMenuItems = () =>
@@ -127,9 +102,31 @@ function AddTask() {
       </MenuItem>
     ));
 
-  const handleDateChange = (newValue) => {
-    setSelectedDate(() => newValue);
-    setSelectedDateChanged(() => true);
+  const addTask = async () => {
+    if (taskName.trim() === "") {
+      return console.error("Must enter a Task");
+    }
+    let taskDate = moment(selectedDate).format("MM/DD/YYYY");
+    if (taskName && project) {
+      try {
+        const newTask = {
+          archived: false,
+          projectId: selectedProject || "",
+          task: taskName,
+          date: taskDate,
+          userId: "123abc",
+        };
+        await addDoc(collection(db, "tasks"), newTask);
+        const updatedTasks = [newTask, ...tasks];
+        dispatch(setTasks({ tasks: updatedTasks }));
+        setTaskName("");
+        setSelectedProject("");
+        setSelectedDate(undefined);
+        dispatch(toggleAddTask(false));
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
   return (
@@ -144,7 +141,7 @@ function AddTask() {
         Add Task
       </StyledAddBtn>
 
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+      <Dialog open={addTaskDialogOpen} onClose={handleDialogClose}>
         <DialogTitle style={{ width: "500px" }}>Add Task</DialogTitle>
         <DialogContent>
           <Stack spacing={4}>

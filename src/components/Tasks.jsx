@@ -33,7 +33,7 @@ function Tasks() {
         <Checkbox id={task.id} />
         <span>{task.task}</span>
         <small style={{ marginLeft: "auto" }}>
-          {task.projectName ? task.projectName : "No Project"}
+          {task.projectName ? task.projectName : "(No Project)"}
         </small>
       </li>
     ));

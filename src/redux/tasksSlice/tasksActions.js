@@ -17,7 +17,7 @@ export const getTasksAction = (selectedProject, projectId) => {
             if (selectedProject === 'project') {
                 q = query(tasksRef, where('projectId', '==', projectId))
             } else if (selectedProject === 'TODAY') {
-                q = query(tasksRef, where('date', '==', moment().format('DD/MM/YYYY')))
+                q = query(tasksRef, where('date', '==', moment().format('MM/DD/YYYY')))
             }
             let querySnapshot = await getDocs(q)
             let tasks = []
