@@ -27,6 +27,9 @@ export const getProjectsAction = () => {
         };
 
         try {
+            dispatch(
+                projectActions.setLoading(true)
+            );
             const projects = await fetchData();
             dispatch(
                 projectActions.setProjects({ projects })
@@ -43,6 +46,9 @@ export const getProjectsAction = () => {
             //     })
             // );
         }
+        dispatch(
+            projectActions.setLoading(false)
+        );
     };
 };
 

@@ -37,6 +37,9 @@ export const getTasksAction = (selectedProject, projectId) => {
         };
 
         try {
+            dispatch(
+                taskActions.setLoading(true)
+            );
             const tasks = await fetchData();
             dispatch(
                 taskActions.setTasks({ tasks })
@@ -53,5 +56,8 @@ export const getTasksAction = (selectedProject, projectId) => {
             //     })
             // );
         }
+        dispatch(
+            taskActions.setLoading(false)
+        );
     };
 };

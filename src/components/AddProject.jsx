@@ -15,6 +15,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import AddIcon from "@mui/icons-material/Add";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const StyledAddBtn = styled(Button)`
   margin-right: 15px !important;
@@ -45,8 +47,9 @@ function AddProject() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const projects = useSelector((state) => state.projects.projects);
+  const submitting = useSelector((state) => state.projects.submitting);
 
-  const { setProjects, setProject } = projectActions;
+  const { setProjects, setProject, setSubmitting } = projectActions;
   const { setTasks } = taskActions;
 
   const projectId = useId() + Math.random();
@@ -64,6 +67,7 @@ function AddProject() {
       return console.error("Must enter a Project Name");
     }
     try {
+      dispatch(setSubmitting(true));
       const newProject = {
         projectId,
         name: projectName,
@@ -75,6 +79,7 @@ function AddProject() {
       setDialogOpen(false);
       dispatch(setProject(projectName));
       dispatch(setTasks({ tasks: [] }));
+      dispatch(setSubmitting(false));
     } catch (e) {
       console.error(e);
     }
@@ -103,16 +108,22 @@ function AddProject() {
           <DialogContentText>
             Fill out the fields below and click the 'Add Project' button.
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Project Name"
-            fullWidth
-            variant="standard"
-            required
-            onChange={(e) => setProjectName(() => e.target.value)}
-          />
+          {!submitting ? (
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Project Name"
+              fullWidth
+              variant="standard"
+              required
+              onChange={(e) => setProjectName(() => e.target.value)}
+            />
+          ) : (
+            <Box sx={{ display: "flex", margin: "0 0 20px 15px" }}>
+              <CircularProgress size={25} sx={{ color: "#ca2100" }} />
+            </Box>
+          )}
         </DialogContent>
         <DialogActions>
           <StyledCancelBtn onClick={handleDialogClose} variant="outlined">

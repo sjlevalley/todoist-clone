@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   FaChevronDown,
   FaInbox,
@@ -28,6 +30,7 @@ const StyledAddProject = styled.div`
 function Sidebar() {
   const dispatch = useDispatch();
   const project = useSelector((state) => state.projects.project);
+  const projectsLoading = useSelector((state) => state.projects.loading);
   const [active, setActive] = useState(project);
   const [showProjects, setShowProjects] = useState(true);
 
@@ -140,9 +143,15 @@ function Sidebar() {
         </span>
         <h2>Projects</h2>
       </div>
-      <ul className="sidebar__projects">
-        {showProjects && <Projects active={active} setActive={setActive} />}
-      </ul>
+      {projectsLoading ? (
+        <Box sx={{ display: "flex", margin: "0 0 20px 15px" }}>
+          <CircularProgress size={25} sx={{ color: "#ca2100" }} />
+        </Box>
+      ) : (
+        <ul className="sidebar__projects">
+          {showProjects && <Projects active={active} setActive={setActive} />}
+        </ul>
+      )}
       <StyledAddProject>{showProjects && <AddProject />}</StyledAddProject>
     </div>
   );
