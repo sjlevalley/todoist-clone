@@ -6,16 +6,6 @@ import { FaPizzaSlice } from "react-icons/fa";
 import { projectActions } from "../../redux/projectsSlice/projectsSlice";
 import { taskActions } from "../../redux/tasksSlice/tasksSlice";
 
-const StyledLogo = styled.div`
-  transition: transform 0.1s;
-  :hover {
-    transform: scale(1.02);
-  }
-  :active {
-    transform: scale(0.98);
-  }
-`;
-
 function Header({ darkMode, setDarkMode }) {
   const dispatch = useDispatch();
 
