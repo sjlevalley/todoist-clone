@@ -17,6 +17,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
+import { uiActions } from "../redux/uiSlice/uiSlice";
 
 const StyledAddBtn = styled(Button)`
   margin-right: 15px !important;
@@ -50,6 +51,7 @@ function AddProject() {
   const submitting = useSelector((state) => state.projects.submitting);
 
   const { setProjects, setProject, setSubmitting } = projectActions;
+  const { setNotification } = uiActions;
   const { setTasks } = taskActions;
 
   const projectId = useId() + Math.random();

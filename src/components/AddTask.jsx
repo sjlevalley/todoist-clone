@@ -71,7 +71,7 @@ function AddTask() {
   const tasks = useSelector((state) => state.tasks.tasks);
 
   const { setTasks, toggleAddTask, setSubmitting } = taskActions;
-  const { setNotification, clearNotification } = uiActions;
+  const { setNotification } = uiActions;
 
   useEffect(() => {
     setInitialProject();
