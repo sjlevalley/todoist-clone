@@ -1,10 +1,12 @@
 import React from "react";
 import Sidebar from "./Sidebar";
 import Tasks from "../Tasks";
+import CustomizedSnackbars from "./Notification";
 
 function Content() {
   return (
     <section className="content">
+      <CustomizedSnackbars />
       <Sidebar />
       <Tasks />
     </section>

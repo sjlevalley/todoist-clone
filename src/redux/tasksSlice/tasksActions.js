@@ -8,7 +8,6 @@ import {
 import moment from 'moment'
 import db from '../../firebase'
 
-// Action Creator Thunk (A function that can return another function as well as execute asynchronous functions). This action creator is used to fetch the cart data from the Firebase database.
 export const getTasksAction = (selectedProject, projectId) => {
     return async (dispatch) => {
         const fetchData = async () => {
@@ -44,17 +43,14 @@ export const getTasksAction = (selectedProject, projectId) => {
             dispatch(
                 taskActions.setTasks({ tasks })
             );
-        } catch (error) {
-            console.error(error)
-
-            // Set the notification component to 'error' status
-            // dispatch(
-            //     uiActions.showNotification({
-            //         status: 'error',
-            //         title: 'Error!',
-            //         message: 'Fetching cart data failed!',
-            //     })
-            // );
+        } catch (e) {
+            console.error(e)
+            dispatch(uiActions.addNotification({
+                id: Math.random(),
+                status: 'error',
+                title: 'ERROR',
+                text: 'An Error occurred while fetching tasks.',
+            }))
         }
         dispatch(
             taskActions.setLoading(false)

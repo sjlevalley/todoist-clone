@@ -25,6 +25,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import db from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { taskActions } from "../redux/tasksSlice/tasksSlice";
+import { uiActions } from "../redux/uiSlice/uiSlice";
 
 const StyledAddBtn = styled(Button)`
   background-color: #db4c3f !important;
@@ -70,6 +71,7 @@ function AddTask() {
   const tasks = useSelector((state) => state.tasks.tasks);
 
   const { setTasks, toggleAddTask, setSubmitting } = taskActions;
+  const { setNotification, clearNotification } = uiActions;
 
   useEffect(() => {
     setInitialProject();
@@ -124,6 +126,12 @@ function AddTask() {
         await addDoc(collection(db, "tasks"), newTask);
         const updatedTasks = [newTask, ...tasks];
         dispatch(setTasks({ tasks: updatedTasks }));
+        dispatch(
+          setNotification({
+            level: "success",
+            message: "Task Added Successfully!",
+          })
+        );
         setTaskName("");
         setSelectedProject("");
         setSelectedDate(undefined);
@@ -131,6 +139,12 @@ function AddTask() {
         dispatch(setSubmitting(false));
       } catch (e) {
         console.error(e);
+        dispatch(
+          setNotification({
+            level: "error",
+            message: "Oops! - An error occurred while adding this task",
+          })
+        );
       }
     }
   };

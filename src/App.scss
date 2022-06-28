@@ -269,12 +269,18 @@ nav {
   border-right: var(--generic-border);
   background-color: #fafafa;
 
+  .sidebar__project-delete {
+    padding: 5px;
+  }
+
   @include mq("900px") {
     display: none;
   }
 
   li {
     &:hover .sidebar__project-delete {
+      background-color: #54545410;
+      border-radius: 50%;
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;

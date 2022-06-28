@@ -1,27 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    projects: {
-        error: false,
-        errorsArray: [],
-        loading: false,
-        submitting: false
-    },
-    tasks: {
-        error: false,
-        errorsArray: [],
-        loading: false,
-        submitting: false
-    }
+    notification: {}
 }
 
 export const uiSlice = createSlice({
     name: 'ui',
     initialState,
     reducers: {
-        // setTasks: (state, action) => {
-        //     state.tasks = action.payload.tasks
-        // }
+        setNotification: (state, action) => {
+            state.notification = action.payload
+        },
+        clearNotification: (state, action) => {
+            state.notification = {}
+        }
     },
 })
 

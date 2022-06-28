@@ -53,6 +53,11 @@ function IndividualProject({ project }) {
 
   const { setProjects, setProject } = projectActions;
 
+  const handleTrashcanClick = (e) => {
+    e.stopPropagation();
+    setShowConfirm(!showConfirm);
+  };
+
   const deleteProject = async (docId) => {
     let tasksRef = collection(db, "tasks");
     let q = query(tasksRef, where("projectId", "==", docId));
@@ -85,40 +90,14 @@ function IndividualProject({ project }) {
       <span
         className="sidebar__project-delete"
         data-testid="delete-project"
-        onClick={() => setShowConfirm(!showConfirm)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") setShowConfirm(!showConfirm);
-        }}
+        onClick={(e) => handleTrashcanClick(e)}
+        onKeyDown={(e) => handleTrashcanClick(e)}
         tabIndex={0}
         role="button"
         aria-label="Confirm deletion of project"
       >
         <FaTrash />
         {showConfirm && (
-          // <div className="project-delete-modal">
-          //   <div className="project-delete-modal__inner">
-          //     <p>Are you sure you want to delete this project?</p>
-          //     <div className="btnContainer">
-          //       <span
-          //         onClick={() => setShowConfirm(!showConfirm)}
-          //         onKeyDown={(e) => {
-          //           if (e.key === "Enter") setShowConfirm(!showConfirm);
-          //         }}
-          //         tabIndex={0}
-          //         role="button"
-          //         aria-label="Cancel adding project, do not delete"
-          //       >
-          //         Cancel
-          //       </span>
-          //       <button
-          //         type="button"
-          //         onClick={() => deleteProject(project.docId)}
-          //       >
-          //         Delete
-          //       </button>
-          //     </div>
-          //   </div>
-          // </div>
           <Dialog
             open={showConfirm}
             onClose={() => setShowConfirm(!showConfirm)}

@@ -75,6 +75,12 @@ function AddProject() {
       };
       await addDoc(collection(db, "projects"), newProject);
       dispatch(getProjectsAction());
+      dispatch(
+        setNotification({
+          level: "success",
+          message: "Project Added Successfully!",
+        })
+      );
       setProjectName("");
       setDialogOpen(false);
       dispatch(setProject(projectName));
@@ -82,6 +88,12 @@ function AddProject() {
       dispatch(setSubmitting(false));
     } catch (e) {
       console.error(e);
+      dispatch(
+        setNotification({
+          level: "error",
+          message: "Oops! - An error occurred while adding this project",
+        })
+      );
     }
   };
 
