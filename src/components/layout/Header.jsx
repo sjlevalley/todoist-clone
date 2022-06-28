@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { FaPizzaSlice } from "react-icons/fa";
+import Tooltip from "@mui/material/Tooltip";
 
 import { projectActions } from "../../redux/projectsSlice/projectsSlice";
 import { taskActions } from "../../redux/tasksSlice/tasksSlice";
@@ -21,26 +22,30 @@ function Header({ darkMode, setDarkMode }) {
         <div className="settings">
           <ul>
             <li className="settings__add">
-              <button
-                data-testid="quick-add-task-action"
-                aria-label="Quick add task"
-                type="button"
-                onClick={() => {
-                  dispatch(toggleAddTask(true));
-                }}
-              >
-                +
-              </button>
+              <Tooltip title="Add Task">
+                <button
+                  data-testid="quick-add-task-action"
+                  aria-label="Quick add task"
+                  type="button"
+                  onClick={() => {
+                    dispatch(toggleAddTask(true));
+                  }}
+                >
+                  +
+                </button>
+              </Tooltip>
             </li>
             <li className="settings__darkmode">
-              <button
-                data-testid="dark-mode-action"
-                aria-label="Darkmode on/off"
-                type="button"
-                onClick={() => setDarkMode(!darkMode)}
-              >
-                <FaPizzaSlice />
-              </button>
+              <Tooltip title="Dark Mode">
+                <button
+                  data-testid="dark-mode-action"
+                  aria-label="Darkmode on/off"
+                  type="button"
+                  onClick={() => setDarkMode(!darkMode)}
+                >
+                  <FaPizzaSlice />
+                </button>
+              </Tooltip>
             </li>
           </ul>
         </div>

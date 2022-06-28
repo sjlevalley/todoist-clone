@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
 import styled from "styled-components";
 import { projectActions } from "../redux/projectsSlice/projectsSlice";
+import Tooltip from "@mui/material/Tooltip";
 
 import db from "../firebase";
 import {
@@ -87,39 +88,38 @@ function IndividualProject({ project }) {
     <>
       <span className="sidebar__dot">•</span>
       <span className="sidebar__project-name">{project.name}</span>
-      <span
-        className="sidebar__project-delete"
-        data-testid="delete-project"
-        onClick={(e) => handleTrashcanClick(e)}
-        onKeyDown={(e) => handleTrashcanClick(e)}
-        tabIndex={0}
-        role="button"
-        aria-label="Confirm deletion of project"
-      >
-        <FaTrash />
-        {showConfirm && (
-          <Dialog
-            open={showConfirm}
-            onClose={() => setShowConfirm(!showConfirm)}
-          >
-            <DialogTitle>Delete Project</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Are you sure you want to delete {styledProjectName}?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <StyledCancelBtn variant="outlined">Cancel</StyledCancelBtn>
-              <StyledDeleteBtn
-                onClick={() => deleteProject(project.docId)}
-                variant="text"
-              >
-                Delete Project
-              </StyledDeleteBtn>
-            </DialogActions>
-          </Dialog>
-        )}
-      </span>
+      <Tooltip title="Delete Project">
+        <span
+          className="sidebar__project-delete"
+          data-testid="delete-project"
+          onClick={(e) => handleTrashcanClick(e)}
+          onKeyDown={(e) => handleTrashcanClick(e)}
+          tabIndex={0}
+          role="button"
+          aria-label="Confirm deletion of project"
+        >
+          <FaTrash />
+        </span>
+      </Tooltip>
+      {showConfirm && (
+        <Dialog open={showConfirm} onClose={() => setShowConfirm(!showConfirm)}>
+          <DialogTitle>Delete Project</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete {styledProjectName}?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <StyledCancelBtn variant="outlined">Cancel</StyledCancelBtn>
+            <StyledDeleteBtn
+              onClick={() => deleteProject(project.docId)}
+              variant="text"
+            >
+              Delete Project
+            </StyledDeleteBtn>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 }
