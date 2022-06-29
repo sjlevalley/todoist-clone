@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+// Local imports
+import AddProject from "../AddProject";
+import { getProjectsAction } from "../../redux/projectsSlice/projectsActions";
+import { getTasksAction } from "../../redux/tasksSlice/tasksActions";
+import { Projects } from "../Projects";
+import { projectActions } from "../../redux/projectsSlice/projectsSlice";
+// Mui imports
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
@@ -9,12 +16,6 @@ import {
   FaRegCalendarAlt,
   FaRegCalendar,
 } from "react-icons/fa";
-
-import AddProject from "../AddProject";
-import { getProjectsAction } from "../../redux/projectsSlice/projectsActions";
-import { getTasksAction } from "../../redux/tasksSlice/tasksActions";
-import { Projects } from "../Projects";
-import { projectActions } from "../../redux/projectsSlice/projectsSlice";
 
 const StyledAddProject = styled.div`
   margin: 10px 0 0 15px;
@@ -26,11 +27,21 @@ const StyledAddProject = styled.div`
     transform: scale(0.98);
   }
 `;
+const StyledBox = styled(Box)`
+  display: flex !important;
+  margin: 0 0 20px 15px !important;
+`;
+const StyledProgress = styled(CircularProgress)`
+  color: #ca2100 !important;
+`;
 
 function Sidebar() {
   const dispatch = useDispatch();
   const project = useSelector((state) => state.projects.project);
   const projectsLoading = useSelector((state) => state.projects.loading);
+  const projectDialogOpen = useSelector(
+    (state) => state.projects.projectDialogOpen
+  );
   const [active, setActive] = useState(project);
   const [showProjects, setShowProjects] = useState(true);
 
@@ -44,6 +55,11 @@ function Sidebar() {
     setActive(project);
   }, [project]);
 
+  const handleAction = (value) => {
+    dispatch(setProject(value));
+    dispatch(getTasksAction(value));
+  };
+
   return (
     <div className="sidebar" data-testid="sidebar">
       <ul className="sidebar__generic">
@@ -56,14 +72,10 @@ function Sidebar() {
             aria-label="Show inbox tasks"
             tabIndex={0}
             role="button"
-            onClick={() => {
-              dispatch(setProject("INBOX"));
-              dispatch(getTasksAction("INBOX"));
-            }}
+            onClick={() => handleAction("INBOX")}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                dispatch(setProject("INBOX"));
-                dispatch(getTasksAction("INBOX"));
+                handleAction("INBOX");
               }
             }}
           >
@@ -83,13 +95,11 @@ function Sidebar() {
             tabIndex={0}
             role="button"
             onClick={() => {
-              dispatch(setProject("TODAY"));
-              dispatch(getTasksAction("TODAY"));
+              handleAction("TODAY");
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                dispatch(setProject("TODAY"));
-                dispatch(getTasksAction("TODAY"));
+                handleAction("TODAY");
               }
             }}
           >
@@ -109,13 +119,11 @@ function Sidebar() {
             tabIndex={0}
             role="button"
             onClick={() => {
-              dispatch(setProject("NEXT_7"));
-              dispatch(getTasksAction("NEXT_7"));
+              handleAction("NEXT_7");
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                dispatch(setProject("NEXT_7"));
-                dispatch(getTasksAction("NEXT_7"));
+                handleAction("NEXT_7");
               }
             }}
           >
@@ -143,10 +151,10 @@ function Sidebar() {
         </span>
         <h2>Projects</h2>
       </div>
-      {projectsLoading ? (
-        <Box sx={{ display: "flex", margin: "0 0 20px 15px" }}>
-          <CircularProgress size={25} sx={{ color: "#ca2100" }} />
-        </Box>
+      {projectsLoading && !projectDialogOpen ? (
+        <StyledBox>
+          <StyledProgress size={25} />
+        </StyledBox>
       ) : (
         <ul className="sidebar__projects">
           {showProjects && <Projects active={active} setActive={setActive} />}

@@ -1,4 +1,5 @@
 import React from "react";
+// Local imports
 import Sidebar from "./Sidebar";
 import Tasks from "../Tasks";
 import CustomizedSnackbars from "./Notification";

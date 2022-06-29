@@ -1,11 +1,12 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
-import { FaPizzaSlice } from "react-icons/fa";
-import Tooltip from "@mui/material/Tooltip";
-
+// Local imports
 import { projectActions } from "../../redux/projectsSlice/projectsSlice";
 import { taskActions } from "../../redux/tasksSlice/tasksSlice";
+// Mui & icon imports
+import Tooltip from "@mui/material/Tooltip";
+import { FaPizzaSlice } from "react-icons/fa";
 
 function Header({ darkMode, setDarkMode }) {
   const dispatch = useDispatch();

@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+// Local imports
 import { uiActions } from "../../redux/uiSlice/uiSlice";
+// Mui imports
 import Stack from "@mui/material/Stack";
 import Slide from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
@@ -16,7 +18,6 @@ function SlideTransition(props) {
 
 export default function CustomizedSnackbars() {
   const dispatch = useDispatch();
-
   const notification = useSelector((state) => state.ui.notification);
 
   const handleClose = (event, reason) => {

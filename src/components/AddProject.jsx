@@ -1,12 +1,10 @@
-import React, { useState, useId } from "react";
+import React, { useId } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import PropTypes from "prop-types";
-import db from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+// Local imports
 import { projectActions } from "../redux/projectsSlice/projectsSlice";
-import { getProjectsAction } from "../redux/projectsSlice/projectsActions";
-import { taskActions } from "../redux/tasksSlice/tasksSlice";
+import { addProjectAction } from "../redux/projectsSlice/projectsActions";
+// Mui imports
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -17,7 +15,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import { uiActions } from "../redux/uiSlice/uiSlice";
 
 const StyledAddBtn = styled(Button)`
   margin-right: 15px !important;
@@ -31,6 +28,16 @@ const StyledAddBtn = styled(Button)`
     transform: scale(0.98);
   }
 `;
+const StyledBtn = styled(Button)`
+  background-color: #dd4b39 !important;
+  border: none !important;
+  color: white !important;
+  font-size: 12px !important;
+`;
+const StyledBox = styled(Box)`
+  display: flex !important;
+  margin: 20px 0 20px 0 !important;
+`;
 const StyledCancelBtn = styled(Button)`
   border-color: #db4c3f !important;
   color: #db4c3f !important;
@@ -42,81 +49,56 @@ const StyledCancelBtn = styled(Button)`
     transform: scale(0.98);
   }
 `;
+const StyledProgress = styled(CircularProgress)`
+  color: #ca2100 !important;
+`;
 
 function AddProject() {
   const dispatch = useDispatch();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [projectName, setProjectName] = useState("");
-  const projects = useSelector((state) => state.projects.projects);
+  const addProjectName = useSelector((state) => state.projects.addProjectName);
+  const projectDialogOpen = useSelector(
+    (state) => state.projects.projectDialogOpen
+  );
   const submitting = useSelector((state) => state.projects.submitting);
-
-  const { setProjects, setProject, setSubmitting } = projectActions;
-  const { setNotification } = uiActions;
-  const { setTasks } = taskActions;
+  const { setAddProjectName, setProjectDialogOpen } = projectActions;
 
   const projectId = useId() + Math.random();
 
   const handleDialogOpen = () => {
-    setDialogOpen(true);
+    dispatch(setProjectDialogOpen(true));
   };
 
   const handleDialogClose = () => {
-    setDialogOpen(false);
+    dispatch(setProjectDialogOpen(false));
   };
 
-  const addProject = async () => {
-    if (projectName.trim() === "") {
-      return console.error("Must enter a Project Name");
-    }
-    try {
-      dispatch(setSubmitting(true));
-      const newProject = {
-        projectId,
-        name: projectName,
-        userId: "123abc",
-      };
-      await addDoc(collection(db, "projects"), newProject);
-      dispatch(getProjectsAction());
-      dispatch(
-        setNotification({
-          level: "success",
-          message: "Project Added Successfully!",
-        })
-      );
-      setProjectName("");
-      setDialogOpen(false);
-      dispatch(setProject(projectName));
-      dispatch(setTasks({ tasks: [] }));
-      dispatch(setSubmitting(false));
-    } catch (e) {
-      console.error(e);
-      dispatch(
-        setNotification({
-          level: "error",
-          message: "Oops! - An error occurred while adding this project",
-        })
-      );
-    }
+  const addProject = () => {
+    const newProjectInfo = {
+      projectId,
+      name: addProjectName,
+      userId: "123abc",
+    };
+    dispatch(addProjectAction(newProjectInfo));
   };
+
+  const submittingDiv = (
+    <StyledBox>
+      <StyledProgress size={25} />
+    </StyledBox>
+  );
 
   return (
     <div>
-      <Button
+      <StyledBtn
         size="small"
-        style={{
-          backgroundColor: "#dd4b39",
-          border: "none",
-          color: "white",
-          fontSize: "12px",
-        }}
         startIcon={<AddIcon />}
         data-testid="add-project"
         variant="outlined"
         onClick={handleDialogOpen}
       >
         Add Project
-      </Button>
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+      </StyledBtn>
+      <Dialog open={projectDialogOpen} onClose={handleDialogClose}>
         <DialogTitle>Add New Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -131,12 +113,10 @@ function AddProject() {
               fullWidth
               variant="standard"
               required
-              onChange={(e) => setProjectName(() => e.target.value)}
+              onChange={(e) => dispatch(setAddProjectName(e.target.value))}
             />
           ) : (
-            <Box sx={{ display: "flex", margin: "0 0 20px 15px" }}>
-              <CircularProgress size={25} sx={{ color: "#ca2100" }} />
-            </Box>
+            submittingDiv
           )}
         </DialogContent>
         <DialogActions>
@@ -151,9 +131,5 @@ function AddProject() {
     </div>
   );
 }
-
-AddProject.propTypes = {
-  shouldShow: PropTypes.bool,
-};
 
 export default AddProject;

@@ -4,7 +4,9 @@ const initialState = {
     projects: [],
     project: 'INBOX',
     loading: false,
-    submitting: false
+    submitting: false,
+    projectDialogOpen: false,
+    addProjectName: ''
 }
 
 export const projectsSlice = createSlice({
@@ -20,8 +22,14 @@ export const projectsSlice = createSlice({
         setProject: (state, action) => {
             state.project = action.payload
         },
+        setProjectDialogOpen: (state, action) => {
+            state.projectDialogOpen = action.payload
+        },
         setSubmitting: (state, action) => {
             state.submitting = action.payload
+        },
+        setAddProjectName: (state, action) => {
+            state.addProjectName = action.payload
         },
     },
 })

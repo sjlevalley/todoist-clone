@@ -3,9 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-// MUI Components
+// Local imports
+import db from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { taskActions } from "../redux/tasksSlice/tasksSlice";
+import { uiActions } from "../redux/uiSlice/uiSlice";
+// MUI imports
 import AddIcon from "@mui/icons-material/Add";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -17,15 +24,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
-
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// Local
-import db from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
-import { taskActions } from "../redux/tasksSlice/tasksSlice";
-import { uiActions } from "../redux/uiSlice/uiSlice";
 
 const StyledAddBtn = styled(Button)`
   background-color: #db4c3f !important;
