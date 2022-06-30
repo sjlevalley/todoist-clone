@@ -10,6 +10,7 @@ import { taskActions } from '../redux/tasksSlice/tasksSlice'
 import { uiActions } from '../redux/uiSlice/uiSlice'
 // MUI imports
 import AddIcon from '@mui/icons-material/Add'
+import ArchiveIcon from '@mui/icons-material/Archive'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -17,6 +18,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
+import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
@@ -54,7 +56,7 @@ const StyledCancelBtn = styled(Button)`
   }
 `
 
-function AddTask () {
+function AddTask ({ checkedTasks }) {
   const dispatch = useDispatch()
 
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -157,6 +159,17 @@ function AddTask () {
       >
         Add Task
       </StyledAddBtn>
+
+      {checkedTasks.length > 0 && (
+        <StyledAddBtn
+          size='small'
+          startIcon={<ArchiveIcon />}
+          data-testid='archive-task-button'
+          variant='outlined'
+        >
+          Archive
+        </StyledAddBtn>
+      )}
 
       <Dialog open={addTaskDialogOpen} onClose={handleDialogClose}>
         <DialogTitle style={{ width: '500px' }}>Add Task</DialogTitle>

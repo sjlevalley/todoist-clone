@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // Local imports
 import AddTask from './AddTask'
-import Checkbox from './Checkbox'
 import { getTasksAction } from '../redux/tasksSlice/tasksActions'
 // Mui imports
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
 import CircularProgress from '@mui/material/CircularProgress'
 
 function Tasks () {
   const dispatch = useDispatch()
+  const [checkedTasks, setCheckedTasks] = useState([])
   const projects = useSelector(state => state.projects.projects)
   const projectName = useSelector(state => state.projects.project)
   const tasks = useSelector(state => state.tasks.tasks)
@@ -23,6 +25,16 @@ function Tasks () {
     dispatch(getTasksAction(projectName))
   }, [])
 
+  const handleCheckboxClick = id => {
+    let updated = [...checkedTasks]
+    if (updated.includes(id)) {
+      updated = updated.filter(taskId => taskId !== id)
+    } else {
+      updated.push(id)
+    }
+    setCheckedTasks(updated)
+  }
+
   const renderTasks = () => {
     let taskObjects = tasks.map(t => {
       const found = projects.find(p => p.projectId === t.projectId)
@@ -32,8 +44,25 @@ function Tasks () {
       }
     })
     const taskItems = taskObjects.map(task => (
-      <li key={task.id}>
-        <Checkbox id={task.id} />
+      <li
+        key={task.id}
+        style={{
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        <Checkbox
+          size='small'
+          checked={checkedTasks.includes(task.docId)}
+          onChange={() => handleCheckboxClick(task.docId)}
+          sx={{
+            color: '#db4c3f',
+            '&.Mui-checked': {
+              color: '#db4c3f'
+            },
+            margin: '0 5px 0 0'
+          }}
+        />
         <span>{task.task}</span>
         <small style={{ marginLeft: 'auto' }}>
           {task.projectName ? task.projectName : '(No Project)'}
@@ -61,7 +90,7 @@ function Tasks () {
           </li>
         </ul>
       )}
-      <AddTask />
+      <AddTask checkedTasks={checkedTasks} />
     </div>
   )
 }
