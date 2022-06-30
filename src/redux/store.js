@@ -4,9 +4,9 @@ import projectsSlice from './projectsSlice/projectsSlice'
 import uiSlice from './uiSlice/uiSlice'
 
 export const store = configureStore({
-    reducer: {
-        tasks: tasksSlice.reducer,
-        projects: projectsSlice.reducer,
-        ui: uiSlice.reducer
-    }
+  reducer: {
+    tasks: tasksSlice.reducer,
+    projects: projectsSlice.reducer,
+    ui: uiSlice.reducer
+  }
 })

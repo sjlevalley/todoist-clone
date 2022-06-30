@@ -1,4 +1,5 @@
 import React from 'react'
+// Local imports
 import firebase from '../firebase'
 
 function Checkbox ({ id }) {

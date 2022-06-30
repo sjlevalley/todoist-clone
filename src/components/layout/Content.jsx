@@ -1,17 +1,17 @@
-import React from "react";
+import React from 'react'
 // Local imports
-import Sidebar from "./Sidebar";
-import Tasks from "../Tasks";
-import CustomizedSnackbars from "./Notification";
+import Sidebar from './Sidebar'
+import Tasks from '../Tasks'
+import CustomizedSnackbars from './Notification'
 
-function Content() {
+function Content () {
   return (
-    <section className="content">
+    <section className='content'>
       <CustomizedSnackbars />
       <Sidebar />
       <Tasks />
     </section>
-  );
+  )
 }
 
-export default Content;
+export default Content
