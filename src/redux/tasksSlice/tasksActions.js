@@ -1,15 +1,56 @@
-import { taskActions } from './tasksSlice'
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  updateDoc
-} from 'firebase/firestore'
 import moment from 'moment'
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where
+} from 'firebase/firestore'
+// Local imports
 import db from '../../firebase'
+import { taskActions } from './tasksSlice'
 import { uiActions } from '../uiSlice/uiSlice'
+
+export const addTaskAction = (
+  newTask,
+  setTaskName,
+  setSelectedDate,
+  setSelectedProject,
+  tasks
+) => {
+  return async dispatch => {
+    const addTask = async () => {
+      await addDoc(collection(db, 'tasks'), newTask)
+    }
+    try {
+      dispatch(taskActions.setSubmitting(true))
+      const add = await addTask()
+      const updatedTasks = [newTask, ...tasks]
+      dispatch(taskActions.setTasks({ tasks: updatedTasks }))
+      dispatch(
+        uiActions.setNotification({
+          level: 'success',
+          message: 'Task Added Successfully!'
+        })
+      )
+      setTaskName('')
+      setSelectedProject('')
+      setSelectedDate(undefined)
+      dispatch(taskActions.toggleAddTask(false))
+    } catch (e) {
+      console.error(e)
+      dispatch(
+        uiActions.setNotification({
+          level: 'error',
+          message: 'Oops! - An error occurred while adding this task'
+        })
+      )
+    }
+    dispatch(taskActions.setSubmitting(false))
+  }
+}
 
 export const getTasksAction = (selectedProject, projectId) => {
   return async dispatch => {

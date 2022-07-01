@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 // Local imports
 import { uiActions } from '../../redux/uiSlice/uiSlice'
 // Mui imports
-import Stack from '@mui/material/Stack'
+import MuiAlert from '@mui/material/Alert'
 import Slide from '@mui/material/Slide'
 import Snackbar from '@mui/material/Snackbar'
-import MuiAlert from '@mui/material/Alert'
+import Stack from '@mui/material/Stack'
 
 const Alert = React.forwardRef(function Alert (props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
