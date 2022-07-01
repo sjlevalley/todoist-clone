@@ -23,6 +23,11 @@ export const tasksSlice = createSlice({
     },
     setSubmitting: (state, action) => {
       state.submitting = action.payload
+    },
+    archiveTasks: (state, action) => {
+      const checked = action.payload.checkedTasks
+      const newTasks = state.tasks.filter(task => !checked.includes(task.docId))
+      state.tasks = newTasks
     }
   }
 })

@@ -5,7 +5,6 @@ import AddTask from './AddTask'
 import { getTasksAction } from '../redux/tasksSlice/tasksActions'
 // Mui imports
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import CircularProgress from '@mui/material/CircularProgress'
 

@@ -1,7 +1,15 @@
 import { taskActions } from './tasksSlice'
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc
+} from 'firebase/firestore'
 import moment from 'moment'
 import db from '../../firebase'
+import { uiActions } from '../uiSlice/uiSlice'
 
 export const getTasksAction = (selectedProject, projectId) => {
   return async dispatch => {
@@ -28,9 +36,8 @@ export const getTasksAction = (selectedProject, projectId) => {
             moment(task.date, 'DD-MM-YYYY').diff(moment(), 'days') <= 7 &&
             task.archived !== true
         )
-      } else {
-        tasks.filter(task => task.archived !== true)
       }
+      tasks = tasks.filter(task => task.archived !== true)
       return tasks
     }
 
@@ -50,5 +57,45 @@ export const getTasksAction = (selectedProject, projectId) => {
       )
     }
     dispatch(taskActions.setLoading(false))
+  }
+}
+
+export const archiveTasksAction = checkedTasks => {
+  return async dispatch => {
+    const archiveTasks = async () => {
+      checkedTasks.forEach(async taskId => {
+        const docRef = doc(db, 'tasks', `${taskId}`)
+        await updateDoc(docRef, {
+          archived: true
+        })
+      })
+    }
+
+    try {
+      dispatch(taskActions.setSubmitting(true))
+      const tasks = await archiveTasks()
+      dispatch(taskActions.archiveTasks({ checkedTasks }))
+      const message =
+        checkedTasks.length === 1
+          ? 'Task Archived Successfully'
+          : 'Tasks Archived Successfully'
+      dispatch(
+        uiActions.setNotification({
+          level: 'success',
+          message
+        })
+      )
+    } catch (e) {
+      console.error(e)
+      dispatch(
+        uiActions.addNotification({
+          id: Math.random(),
+          status: 'error',
+          title: 'ERROR',
+          text: 'An Error occurred while archiving tasks.'
+        })
+      )
+    }
+    dispatch(taskActions.setSubmitting(false))
   }
 }
