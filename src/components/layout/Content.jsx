@@ -1,8 +1,8 @@
 import React from 'react'
 // Local imports
+import CustomizedSnackbars from './Notification'
 import Sidebar from './Sidebar'
 import Tasks from '../Tasks'
-import CustomizedSnackbars from './Notification'
 
 function Content () {
   return (

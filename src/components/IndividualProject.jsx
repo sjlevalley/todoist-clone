@@ -48,6 +48,7 @@ const StyledCancelBtn = styled(Button)`
 
 function IndividualProject ({ project }) {
   const dispatch = useDispatch()
+
   const [showConfirm, setShowConfirm] = useState(false)
 
   const projects = useSelector(state => state.projects.projects)

@@ -208,10 +208,10 @@ function AddTask ({ checkedTasks }) {
 }
 
 AddTask.propTypes = {
+  setShowQuickAddTask: PropTypes.func,
   showAddTaskMain: PropTypes.bool,
   shouldShowMain: PropTypes.bool,
-  showQuickAddTask: PropTypes.bool,
-  setShowQuickAddTask: PropTypes.func
+  showQuickAddTask: PropTypes.bool
 }
 
 export default AddTask

@@ -5,8 +5,8 @@ import PropTypes from 'prop-types'
 import { projectActions } from '../../redux/projectsSlice/projectsSlice'
 import { taskActions } from '../../redux/tasksSlice/tasksSlice'
 // Mui & icon imports
-import Tooltip from '@mui/material/Tooltip'
 import { FaPizzaSlice } from 'react-icons/fa'
+import Tooltip from '@mui/material/Tooltip'
 
 function Header ({ darkMode, setDarkMode }) {
   const dispatch = useDispatch()

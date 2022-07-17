@@ -8,6 +8,7 @@ import { projectActions } from '../redux/projectsSlice/projectsSlice'
 
 export const Projects = ({ active }) => {
   const dispatch = useDispatch()
+
   const projects = useSelector(state => state.projects.projects)
 
   const { setProject } = projectActions
