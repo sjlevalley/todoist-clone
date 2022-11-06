@@ -1,0 +1,12 @@
+Tasks get deleted when associated project is deleted (& add confirmation modal that tasks will also be deleted)
+
+
+Hook up Dark Mode to whole project
+Login/Auth
+
+site URL - https://todoist-2db6b.web.app
+
+firebase deploy --only hosting
+
+TODO:
+- hold colors in variables in scss file instead of having to declare color in each file

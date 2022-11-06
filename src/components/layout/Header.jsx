@@ -37,7 +37,11 @@ function Header({ darkMode, setDarkMode }) {
               </Tooltip>
             </li>
             <li className="settings__darkmode">
-              <Tooltip title="Dark Mode">
+              <Tooltip
+                title={
+                  darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                }
+              >
                 <button
                   data-testid="dark-mode-action"
                   aria-label="Darkmode on/off"
