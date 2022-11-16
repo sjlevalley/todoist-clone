@@ -1,0 +1,46 @@
+// {
+//   "compilerOptions": {
+//     "allowJs": true,
+//     "esModuleInterop": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "incremental": true,
+//     "isolatedModules": true,
+//     "jsx": "preserve",
+//     "lib": ["dom", "dom.iterable", "esnext"],
+//     "module": "esnext",
+//     "moduleResolution": "node",
+//     "noEmit": true,
+//     "noFallthroughCasesInSwitch": true,
+//     "noImplicitAny": true,
+//     "noImplicitReturns": true,
+//     "noImplicitThis": true,
+//     "outDir": "./dist",
+//     "noUnusedLocals": true,
+//     "noUnusedParameters": true,
+//     "removeComments": true,
+//     "resolveJsonModule": true,
+//     "rootDir": "./src",
+//     "skipLibCheck": true,
+//     "strict": true,
+//     "strictFunctionTypes": true,
+//     "strictNullChecks": true,
+//     "target": "es5"
+//   },
+//   "include": ["src/**/*"],
+//   "exclude": ["node_modules"]
+// }
+
+{
+  "compilerOptions": {
+    "outDir": "./dist/", // path to output directory
+    "sourceMap": true, // allow sourcemap support
+    "strictNullChecks": true, // enable strict null checks as a best practice
+    "module": "es6", // specify module code generation
+    "moduleResolution": "node",
+    "jsx": "preserve", // use typescript to transpile jsx to js
+    "target": "es5", // specify ECMAScript target version
+    "allowJs": true // allow a partial TypeScript and JavaScript codebase
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}

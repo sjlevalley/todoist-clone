@@ -8,7 +8,12 @@ import { taskActions } from "../../redux/tasksSlice/tasksSlice";
 import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 import Tooltip from "@mui/material/Tooltip";
 
-function Header({ darkMode, setDarkMode }) {
+type HeaderProps = {
+  darkMode: boolean;
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Header: React.FC<HeaderProps> = ({ darkMode, setDarkMode }) => {
   const dispatch = useDispatch();
 
   const { setProject } = projectActions;
@@ -57,7 +62,7 @@ function Header({ darkMode, setDarkMode }) {
       </nav>
     </header>
   );
-}
+};
 
 Header.propTypes = {
   darkMode: PropTypes.bool.isRequired,

@@ -6,7 +6,8 @@ Login/Auth
 
 site URL - https://todoist-2db6b.web.app
 
-firebase deploy --only hosting
+1. npm run build
+2. firebase deploy --only hosting
 
 TODO:
 - hold colors in variables in scss file instead of having to declare color in each file
